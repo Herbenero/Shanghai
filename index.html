@@ -1,301 +1,164 @@
-export default function ShanghaiDartsApp() {
-  const { useState, useEffect } = React;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shanghai Darts Tracker</title>
+    <style>
+        body { font-family: sans-serif; display: flex; padding: 20px; background: #f0f0f0; }
+        #setup { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        #game { display: none; width: 100%; gap: 20px; }
+        
+        #winner-box { 
+            display: none; width: 200px; padding: 20px; background: orange; 
+            color: white; font-weight: bold; font-size: 1.5rem; text-align: center;
+            border-radius: 8px; height: fit-content; align-self: center;
+        }
 
-  const TOTAL_ROUNDS = 20;
+        .controls { flex-grow: 1; text-align: center; }
+        .btn-group { margin: 20px 0; display: flex; justify-content: center; gap: 10px; }
+        button { padding: 15px 25px; font-size: 1.1rem; cursor: pointer; border: none; border-radius: 5px; background: #007bff; color: white; }
+        button:active { background: #0056b3; }
+        .miss { background: #6c757d; }
 
-  const [setupComplete, setSetupComplete] = useState(false);
-  const [playerInput, setPlayerInput] = useState('');
-  const [players, setPlayers] = useState([]);
-  const [scores, setScores] = useState({});
-  const [currentPlayer, setCurrentPlayer] = useState(0);
-  const [currentRound, setCurrentRound] = useState(1);
-  const [dartCount, setDartCount] = useState(0);
-  const [showNextPlayer, setShowNextPlayer] = useState(false);
-  const [winner, setWinner] = useState(null);
-  const [gameOver, setGameOver] = useState(false);
+        .scoreboard-container { display: flex; gap: 10px; overflow-x: auto; padding: 10px; }
+        .player-col { background: white; border: 1px solid #ddd; border-radius: 5px; min-width: 100px; text-align: center; }
+        .player-header { font-weight: bold; padding: 10px; border-bottom: 2px solid #007bff; }
+        .score-cell { padding: 5px; border-bottom: 1px solid #eee; height: 25px; }
+        .total-row { font-weight: bold; background: #e9ecef; padding: 10px; }
 
-  const initializeGame = () => {
-    const names = playerInput
-      .split(',')
-      .map((name) => name.trim())
-      .filter(Boolean);
+        #alert-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); color: white; justify-content: center;
+            align-items: center; font-size: 3rem; z-index: 100;
+        }
+        .active-player { color: #007bff; text-decoration: underline; }
+    </style>
+</head>
+<body>
 
-    if (names.length === 0) return;
+<div id="setup">
+    <h2>Shanghai Darts Setup</h2>
+    <input type="text" id="playerName" placeholder="Player Name">
+    <button onclick="addPlayer()">Add Player</button>
+    <ul id="playerList"></ul>
+    <button onclick="startGame()" style="background: green; margin-top: 10px;">Start Game</button>
+</div>
 
-    const initialScores = {};
+<div id="game">
+    <div id="winner-box"></div>
 
-    names.forEach((name) => {
-      initialScores[name] = {
-        total: 0,
-        rounds: Array(TOTAL_ROUNDS).fill(0),
-      };
-    });
-
-    setPlayers(names);
-    setScores(initialScores);
-    setSetupComplete(true);
-  };
-
-  const getPoints = (type) => {
-    if (type === 'miss') return 0;
-
-    if (type === 'single') return currentRound;
-    if (type === 'double') return currentRound * 2;
-    if (type === 'triple') return currentRound * 3;
-
-    return 0;
-  };
-
-  const nextTurn = () => {
-    const nextPlayer = currentPlayer + 1;
-
-    if (nextPlayer >= players.length) {
-      if (currentRound >= TOTAL_ROUNDS) {
-        endGame();
-      } else {
-        setCurrentPlayer(0);
-        setCurrentRound((prev) => prev + 1);
-        triggerNextPlayerDisplay();
-      }
-    } else {
-      setCurrentPlayer(nextPlayer);
-      triggerNextPlayerDisplay();
-    }
-  };
-
-  const triggerNextPlayerDisplay = () => {
-    setShowNextPlayer(true);
-
-    setTimeout(() => {
-      setShowNextPlayer(false);
-    }, 3000);
-  };
-
-  const endGame = () => {
-    let winningPlayer = players[0];
-    let highestScore = scores[players[0]].total;
-
-    players.forEach((player) => {
-      if (scores[player].total > highestScore) {
-        highestScore = scores[player].total;
-        winningPlayer = player;
-      }
-    });
-
-    setWinner({
-      name: winningPlayer,
-      score: highestScore,
-    });
-
-    setGameOver(true);
-  };
-
-  const handleScore = (type) => {
-    if (gameOver) return;
-
-    const points = getPoints(type);
-    const playerName = players[currentPlayer];
-
-    const updatedScores = { ...scores };
-
-    updatedScores[playerName].rounds[currentRound - 1] += points;
-    updatedScores[playerName].total += points;
-
-    setScores(updatedScores);
-
-    const updatedDarts = dartCount + 1;
-
-    if (updatedDarts >= 3) {
-      setDartCount(0);
-      nextTurn();
-    } else {
-      setDartCount(updatedDarts);
-    }
-  };
-
-  useEffect(() => {
-    if (setupComplete) {
-      triggerNextPlayerDisplay();
-    }
-  }, [setupComplete]);
-
-  return (
-    <div className="min-h-screen bg-slate-900 text-white p-6">
-      {!setupComplete ? (
-        <div className="max-w-2xl mx-auto mt-20 bg-slate-800 rounded-3xl p-8 shadow-2xl border border-slate-700">
-          <h1 className="text-5xl font-bold text-center mb-6 text-orange-400">
-            Shanghai Darts
-          </h1>
-
-          <p className="text-center text-slate-300 mb-6 text-lg">
-            Enter player names separated by commas
-          </p>
-
-          <input
-            type="text"
-            value={playerInput}
-            onChange={(e) => setPlayerInput(e.target.value)}
-            placeholder="Herb, Mike, Sarah"
-            className="w-full p-4 rounded-2xl bg-slate-700 border border-slate-600 text-white text-lg mb-6"
-          />
-
-          <button
-            onClick={initializeGame}
-            className="w-full bg-orange-500 hover:bg-orange-600 transition-all duration-200 p-4 rounded-2xl text-xl font-bold"
-          >
-            Start Game
-          </button>
+    <div class="controls">
+        <h2 id="round-title">Round 1</h2>
+        <h3 id="turn-indicator">Waiting...</h3>
+        <p>Dart: <span id="dart-count">1</span>/3</p>
+        <div class="btn-group">
+            <button onclick="recordScore(1)">Single</button>
+            <button onclick="recordScore(2)">Double</button>
+            <button onclick="recordScore(3)">Triple</button>
+            <button class="miss" onclick="recordScore(0)">Miss</button>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-1 space-y-6">
-            <div className="bg-slate-800 rounded-3xl p-6 border border-slate-700 shadow-xl">
-              <h2 className="text-3xl font-bold text-orange-400 mb-4">
-                Round {currentRound}
-              </h2>
-
-              {!gameOver && (
-                <>
-                  <div className="mb-4">
-                    <div className="text-slate-400 text-sm uppercase tracking-wide">
-                      Current Player
-                    </div>
-
-                    <div className="text-4xl font-extrabold mt-2">
-                      {players[currentPlayer]}
-                    </div>
-                  </div>
-
-                  <div className="mb-6 text-lg text-slate-300">
-                    Dart {dartCount + 1} / 3
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <button
-                      onClick={() => handleScore('single')}
-                      className="bg-blue-600 hover:bg-blue-700 rounded-2xl p-5 text-2xl font-bold transition-all"
-                    >
-                      Single
-                    </button>
-
-                    <button
-                      onClick={() => handleScore('double')}
-                      className="bg-green-600 hover:bg-green-700 rounded-2xl p-5 text-2xl font-bold transition-all"
-                    >
-                      Double
-                    </button>
-
-                    <button
-                      onClick={() => handleScore('triple')}
-                      className="bg-red-600 hover:bg-red-700 rounded-2xl p-5 text-2xl font-bold transition-all"
-                    >
-                      Triple
-                    </button>
-
-                    <button
-                      onClick={() => handleScore('miss')}
-                      className="bg-slate-600 hover:bg-slate-700 rounded-2xl p-5 text-2xl font-bold transition-all"
-                    >
-                      Miss
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-
-            {winner && (
-              <div className="bg-orange-500 text-black rounded-3xl p-6 shadow-2xl border-4 border-yellow-300">
-                <div className="text-sm font-bold uppercase tracking-widest mb-2">
-                  Winner
-                </div>
-
-                <div className="text-4xl font-extrabold mb-2">
-                  {winner.name}
-                </div>
-
-                <div className="text-2xl font-bold">
-                  {winner.score} pts
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="lg:col-span-3 bg-slate-800 rounded-3xl p-6 border border-slate-700 shadow-2xl overflow-x-auto">
-            <h2 className="text-3xl font-bold text-center text-orange-400 mb-6">
-              Scoreboard
-            </h2>
-
-            <div className="overflow-auto">
-              <table className="w-full border-collapse min-w-[900px]">
-                <thead>
-                  <tr>
-                    <th className="sticky left-0 bg-slate-800 p-3 text-left border-b border-slate-600 text-orange-300">
-                      Player
-                    </th>
-
-                    {Array.from({ length: TOTAL_ROUNDS }, (_, i) => (
-                      <th
-                        key={i}
-                        className="p-3 border-b border-slate-600 text-center text-slate-300"
-                      >
-                        R{i + 1}
-                      </th>
-                    ))}
-
-                    <th className="p-3 border-b border-slate-600 text-center text-orange-300 font-bold">
-                      Total
-                    </th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {players.map((player, index) => (
-                    <tr
-                      key={player}
-                      className={`border-b border-slate-700 ${
-                        index === currentPlayer && !gameOver
-                          ? 'bg-slate-700/40'
-                          : ''
-                      }`}
-                    >
-                      <td className="sticky left-0 bg-slate-800 p-3 font-bold text-lg text-white">
-                        {player}
-                      </td>
-
-                      {scores[player].rounds.map((score, idx) => (
-                        <td
-                          key={idx}
-                          className="p-3 text-center text-lg"
-                        >
-                          {score}
-                        </td>
-                      ))}
-
-                      <td className="p-3 text-center text-2xl font-extrabold text-orange-400">
-                        {scores[player].total}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showNextPlayer && setupComplete && !gameOver && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 animate-pulse">
-          <div className="bg-orange-500 text-black px-12 py-10 rounded-3xl shadow-2xl text-center border-4 border-yellow-300">
-            <div className="text-2xl font-bold uppercase tracking-widest mb-4">
-              Next Thrower
-            </div>
-
-            <div className="text-6xl font-extrabold">
-              {players[currentPlayer]}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
-  );
-}
+
+    <div class="scoreboard-container" id="scoreboard"></div>
+</div>
+
+<div id="alert-overlay"></div>
+
+<script>
+    let players = [];
+    let currentRound = 1;
+    let currentPlayerIdx = 0;
+    let currentDart = 1;
+
+    function addPlayer() {
+        const name = document.getElementById('playerName').value;
+        if (name) {
+            players.push({ name: name, scores: Array(20).fill(0), total: 0 });
+            const li = document.createElement('li');
+            li.textContent = name;
+            document.getElementById('playerList').appendChild(li);
+            document.getElementById('playerName').value = '';
+        }
+    }
+
+    function startGame() {
+        if (players.length === 0) return alert("Add at least one player");
+        document.getElementById('setup').style.display = 'none';
+        document.getElementById('game').style.display = 'flex';
+        renderScoreboard();
+        updateDisplay();
+    }
+
+    function recordScore(multiplier) {
+        let points = multiplier * currentRound;
+        players[currentPlayerIdx].scores[currentRound - 1] += points;
+        players[currentPlayerIdx].total += points;
+
+        if (currentDart < 3) {
+            currentDart++;
+        } else {
+            nextTurn();
+        }
+        renderScoreboard();
+        updateDisplay();
+    }
+
+    function nextTurn() {
+        currentDart = 1;
+        if (currentPlayerIdx < players.length - 1) {
+            currentPlayerIdx++;
+            showNextPlayerAlert();
+        } else {
+            if (currentRound < 20) {
+                currentRound++;
+                currentPlayerIdx = 0;
+                showNextPlayerAlert();
+            } else {
+                endGame();
+            }
+        }
+    }
+
+    function showNextPlayerAlert() {
+        const overlay = document.getElementById('alert-overlay');
+        overlay.textContent = `Next Player: ${players[currentPlayerIdx].name}`;
+        overlay.style.display = 'flex';
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 3000);
+    }
+
+    function updateDisplay() {
+        document.getElementById('round-title').textContent = `Round ${currentRound}`;
+        document.getElementById('turn-indicator').textContent = `${players[currentPlayerIdx].name}'s Turn`;
+        document.getElementById('dart-count').textContent = currentDart;
+    }
+
+    function renderScoreboard() {
+        const container = document.getElementById('scoreboard');
+        container.innerHTML = '';
+        players.forEach((p, idx) => {
+            const col = document.createElement('div');
+            col.className = 'player-col';
+            let rows = `<div class="player-header ${idx === currentPlayerIdx ? 'active-player' : ''}">${p.name}</div>`;
+            for (let i = 0; i < 20; i++) {
+                rows += `<div class="score-cell">${p.scores[i] || '-'}</div>`;
+            }
+            rows += `<div class="total-row">${p.total}</div>`;
+            col.innerHTML = rows;
+            container.appendChild(col);
+        });
+    }
+
+    function endGame() {
+        const winner = players.reduce((prev, current) => (prev.total > current.total) ? prev : current);
+        const box = document.getElementById('winner-box');
+        box.style.display = 'block';
+        box.textContent = `WINNER: ${winner.name}`;
+        document.querySelector('.btn-group').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
