@@ -251,4 +251,51 @@ export default function ShanghaiDartsApp() {
                 <tbody>
                   {players.map((player, index) => (
                     <tr
-                      key={player}ind
+                      key={player}
+                      className={`border-b border-slate-700 ${
+                        index === currentPlayer && !gameOver
+                          ? 'bg-slate-700/40'
+                          : ''
+                      }`}
+                    >
+                      <td className="sticky left-0 bg-slate-800 p-3 font-bold text-lg text-white">
+                        {player}
+                      </td>
+
+                      {scores[player].rounds.map((score, idx) => (
+                        <td
+                          key={idx}
+                          className="p-3 text-center text-lg"
+                        >
+                          {score}
+                        </td>
+                      ))}
+
+                      <td className="p-3 text-center text-2xl font-extrabold text-orange-400">
+                        {scores[player].total}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showNextPlayer && setupComplete && !gameOver && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 animate-pulse">
+          <div className="bg-orange-500 text-black px-12 py-10 rounded-3xl shadow-2xl text-center border-4 border-yellow-300">
+            <div className="text-2xl font-bold uppercase tracking-widest mb-4">
+              Next Thrower
+            </div>
+
+            <div className="text-6xl font-extrabold">
+              {players[currentPlayer]}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
