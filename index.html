@@ -9,8 +9,10 @@
             --primary: #007bff;
             --secondary: #6c757d;
             --success: #28a745;
-            --warning: orange;
+            --warning: #ffc107;
+            --danger: #dc3545;
             --bg: #f8f9fa;
+            --card-bg: #ffffff;
         }
 
         body { 
@@ -21,168 +23,109 @@
             touch-action: manipulation;
         }
 
-        #setup { 
-            max-width: 500px; 
-            margin: 20px auto; 
-            background: white; 
-            padding: 20px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-        }
+        .view-section { max-width: 600px; margin: 10px auto; background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        h1, h2, h3 { margin-top: 0; color: #333; }
+        .main-title { font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; text-align: center;}
 
-        input { 
-            width: 100%; 
-            padding: 15px; 
-            margin-bottom: 10px; 
-            border: 1px solid #ddd; 
-            border-radius: 8px; 
-            font-size: 16px;
-            box-sizing: border-box;
-        }
+        input, select { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        
+        .btn { padding: 12px; font-size: 1rem; font-weight: bold; cursor: pointer; border: none; border-radius: 8px; color: white; transition: opacity 0.2s; width: 100%; margin-bottom: 10px;}
+        .btn:active { opacity: 0.8; }
+        .btn-primary { background: var(--primary); }
+        .btn-success { background: var(--success); }
+        .btn-secondary { background: var(--secondary); }
+        .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
 
-        #game { 
-            display: none; 
-            flex-direction: column; 
-            gap: 15px; 
-            max-width: 1000px; 
-            margin: 0 auto; 
-        }
+        /* Game UI */
+        #game { display: none; flex-direction: column; gap: 15px; max-width: 1000px; margin: 0 auto; }
+        @media (min-width: 768px) { #game { flex-direction: row; align-items: flex-start; } }
 
-        @media (min-width: 768px) {
-            #game { flex-direction: row; align-items: flex-start; }
-        }
+        #winner-box { display: none; padding: 20px; background: var(--warning); color: #000; font-weight: bold; font-size: 1.5rem; text-align: center; border-radius: 12px; margin-bottom: 15px; }
 
-        .main-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #333;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 0 0 5px 0;
-        }
+        .controls { flex: 1; background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .btn-group .miss { grid-column: span 3; background: var(--secondary); }
 
-        #winner-box { 
-            display: none; 
-            padding: 20px; 
-            background: var(--warning); 
-            color: white; 
-            font-weight: bold; 
-            font-size: 1.8rem; 
-            text-align: center;
-            border-radius: 12px;
-            margin-bottom: 15px;
-        }
+        /* Scoreboard */
+        .scoreboard-wrapper { flex: 1.5; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .scoreboard-container { display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .player-col { flex: 1; min-width: 80px; text-align: center; border-right: 1px solid #eee; }
+        .player-header { font-weight: bold; padding: 12px 5px; background: #f1f1f1; border-bottom: 2px solid var(--primary); font-size: 0.9rem;}
+        .score-cell { padding: 6px 0; border-bottom: 1px solid #eee; font-size: 0.85rem; height: 18px; }
+        .total-row { font-weight: bold; background: #e9ecef; padding: 12px 0; color: var(--primary); font-size: 1rem; }
 
-        .controls { 
-            flex: 1; 
-            background: white; 
-            padding: 20px; 
-            border-radius: 12px; 
-            text-align: center; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .btn-group { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 12px; 
-            margin-top: 20px; 
-        }
-
-        button { 
-            padding: 20px; 
-            font-size: 1.2rem; 
-            font-weight: bold;
-            cursor: pointer; 
-            border: none; 
-            border-radius: 10px; 
-            background: var(--primary); 
-            color: white; 
-        }
-
-        button:active { opacity: 0.7; }
-        .btn-start { background: var(--success); width: 100%; }
-        .miss { background: var(--secondary); grid-column: span 2; }
-
-        .scoreboard-wrapper {
-            flex: 1.5;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .scoreboard-container { 
-            display: flex; 
-            overflow-x: auto; 
-            padding: 0; 
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .player-col { 
-            flex: 1;
-            min-width: 85px; 
-            text-align: center; 
-            border-right: 1px solid #eee;
-        }
-
-        .player-header { 
-            font-weight: bold; 
-            padding: 15px 5px; 
-            background: #f1f1f1;
-            border-bottom: 2px solid var(--primary);
-        }
-
-        .score-cell { 
-            padding: 8px 0; 
-            border-bottom: 1px solid #eee; 
-            font-size: 0.9rem;
-            height: 20px;
-        }
-
-        .total-row { 
-            font-weight: bold; 
-            background: #e9ecef; 
-            padding: 15px 0; 
-            color: var(--primary);
-            font-size: 1.1rem;
-        }
+        /* History */
+        .history-item { border-bottom: 1px solid #eee; padding: 10px 0; display: flex; justify-content: space-between; align-items: center; }
+        .history-item:last-child { border-bottom: none; }
+        .history-date { font-weight: bold; color: var(--secondary); font-size: 0.9rem; }
 
         #alert-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); color: white; justify-content: center;
-            align-items: center; font-size: 2.5rem; z-index: 100; text-align: center;
+            align-items: center; font-size: 2rem; z-index: 100; text-align: center;
             padding: 20px; box-sizing: border-box;
         }
+
+        .tab-nav { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-nav button { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: white; cursor: pointer; }
+        .tab-nav button.active { background: var(--primary); color: white; border-color: var(--primary); }
     </style>
 </head>
 <body>
 
-<div id="setup">
+<div id="setup" class="view-section">
     <h1 class="main-title">Hellcastle Shanghai</h1>
-    <input type="text" id="playerName" placeholder="Enter Player Name" inputmode="text">
-    <button onclick="addPlayer()" style="width:100%; margin-bottom:10px;">+ Add Player</button>
-    <ul id="playerList" style="padding-left:20px; margin: 15px 0;"></ul>
-    <button onclick="startGame()" class="btn-start">Start Game</button>
+    
+    <div class="tab-nav">
+        <button id="tab-new" class="active" onclick="showTab('new')">New Game</button>
+        <button id="tab-history" onclick="showTab('history')">History</button>
+    </div>
+
+    <div id="new-game-panel">
+        <label style="font-size: 0.9rem; font-weight: bold;">Game Mode</label>
+        <select id="gameMode">
+            <option value="Shanghai">Shanghai (1-20)</option>
+            <option value="Shanghai 7">Shanghai 7 (1-7)</option>
+        </select>
+
+        <label style="font-size: 0.9rem; font-weight: bold;">Game Date</label>
+        <input type="date" id="gameDate">
+
+        <div style="margin-top:15px;">
+            <input type="text" id="playerName" placeholder="Player Name" inputmode="text">
+            <button onclick="addPlayer()" class="btn btn-outline">+ Add Player</button>
+        </div>
+        
+        <ul id="playerList" style="margin: 15px 0; font-size: 0.9rem;"></ul>
+        <button onclick="startGame()" class="btn btn-success">Start Match</button>
+    </div>
+
+    <div id="history-panel" style="display:none;">
+        <h3>Previous Games</h3>
+        <div id="history-list"></div>
+        <button onclick="clearHistory()" class="btn" style="background:var(--danger); margin-top:20px;">Clear All History</button>
+    </div>
 </div>
 
 <div id="game">
     <div id="winner-box"></div>
-
     <div class="controls">
-        <h1 class="main-title">Hellcastle Shanghai</h1>
-        <h2 id="round-title" style="margin:0; color:var(--primary); font-size: 1.2rem;">Round 1</h2>
-        <h3 id="turn-indicator" style="margin:10px 0">Waiting...</h3>
-        <div style="font-size: 1.1rem; margin-bottom: 10px;">
+        <h1 class="main-title" style="font-size: 1.1rem; margin-bottom:5px;">Hellcastle Shanghai</h1>
+        <div id="game-mode-indicator" style="font-size: 0.7rem; color: #888; margin-bottom:10px;">MODE: SHANGHAI</div>
+        <h2 id="round-title" style="margin:0; color:var(--primary); font-size: 1.3rem;">Round 1</h2>
+        <h3 id="turn-indicator" style="margin:10px 0; font-size: 1.1rem;">Waiting...</h3>
+        <div style="font-size: 1rem; margin-bottom: 10px;">
             Dart: <span id="dart-count" style="font-weight:bold">1</span> / 3
         </div>
         
         <div class="btn-group">
-            <button onclick="recordScore(1)">Single</button>
-            <button onclick="recordScore(2)">Double</button>
-            <button onclick="recordScore(3)">Triple</button>
-            <button class="miss" onclick="recordScore(0)">MISS</button>
+            <button class="btn btn-primary" onclick="recordScore(1)">S</button>
+            <button class="btn btn-primary" onclick="recordScore(2)">D</button>
+            <button class="btn btn-primary" onclick="recordScore(3)">T</button>
+            <button class="btn miss" onclick="recordScore(0)">MISS</button>
         </div>
+        <button onclick="location.reload()" class="btn btn-secondary" style="margin-top:20px; font-size: 0.8rem;">Quit Game</button>
     </div>
 
     <div class="scoreboard-wrapper">
@@ -197,6 +140,22 @@
     let currentRound = 1;
     let currentPlayerIdx = 0;
     let currentDart = 1;
+    let maxRounds = 20;
+    let selectedMode = "Shanghai";
+    let gameDate = "";
+    
+    // Tracks hits in the current turn for Shanghai rule
+    let currentTurnHits = { single: false, double: false, triple: false };
+
+    document.getElementById('gameDate').valueAsDate = new Date();
+
+    function showTab(tab) {
+        document.getElementById('new-game-panel').style.display = tab === 'new' ? 'block' : 'none';
+        document.getElementById('history-panel').style.display = tab === 'history' ? 'block' : 'none';
+        document.getElementById('tab-new').className = tab === 'new' ? 'active' : '';
+        document.getElementById('tab-history').className = tab === 'history' ? 'active' : '';
+        if(tab === 'history') renderHistory();
+    }
 
     function addPlayer() {
         const input = document.getElementById('playerName');
@@ -213,6 +172,12 @@
 
     function startGame() {
         if (players.length === 0) return alert("Please add players first.");
+        
+        selectedMode = document.getElementById('gameMode').value;
+        gameDate = document.getElementById('gameDate').value;
+        maxRounds = selectedMode === "Shanghai 7" ? 7 : 20;
+        
+        document.getElementById('game-mode-indicator').textContent = `MODE: ${selectedMode.toUpperCase()}`;
         document.getElementById('setup').style.display = 'none';
         document.getElementById('game').style.display = 'flex';
         renderScoreboard();
@@ -223,6 +188,17 @@
         let points = multiplier * currentRound;
         players[currentPlayerIdx].scores[currentRound - 1] += points;
         players[currentPlayerIdx].total += points;
+
+        // Track multipliers for the Shanghai rule
+        if (multiplier === 1) currentTurnHits.single = true;
+        if (multiplier === 2) currentTurnHits.double = true;
+        if (multiplier === 3) currentTurnHits.triple = true;
+
+        // Check for SHANGHAI!
+        if (currentTurnHits.single && currentTurnHits.double && currentTurnHits.triple) {
+            endGame(true);
+            return;
+        }
 
         if (currentDart < 3) {
             currentDart++;
@@ -235,25 +211,27 @@
 
     function nextTurn() {
         currentDart = 1;
+        currentTurnHits = { single: false, double: false, triple: false }; // Reset turn tracking
+
         if (currentPlayerIdx < players.length - 1) {
             currentPlayerIdx++;
             showNextPlayerAlert();
         } else {
-            if (currentRound < 20) {
+            if (currentRound < maxRounds) {
                 currentRound++;
                 currentPlayerIdx = 0;
                 showNextPlayerAlert();
             } else {
-                endGame();
+                endGame(false);
             }
         }
     }
 
     function showNextPlayerAlert() {
         const overlay = document.getElementById('alert-overlay');
-        overlay.innerHTML = `<div><small style="display:block; font-size:1.2rem; opacity:0.8;">UP NEXT</small>${players[currentPlayerIdx].name}</div>`;
+        overlay.innerHTML = `<div><small style="display:block; font-size:1rem; opacity:0.8;">UP NEXT</small>${players[currentPlayerIdx].name}</div>`;
         overlay.style.display = 'flex';
-        setTimeout(() => { overlay.style.display = 'none'; }, 3000);
+        setTimeout(() => { overlay.style.display = 'none'; }, 1500);
     }
 
     function updateDisplay() {
@@ -269,9 +247,9 @@
             const col = document.createElement('div');
             col.className = 'player-col';
             let rows = `<div class="player-header" style="${idx === currentPlayerIdx ? 'background:#e7f3ff;' : ''}">${p.name}</div>`;
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < maxRounds; i++) {
                 const isCurrentRound = (i === currentRound - 1);
-                rows += `<div class="score-cell" style="${isCurrentRound ? 'font-weight:bold; color:var(--primary);' : ''}">${p.scores[i] || '-'}</div>`;
+                rows += `<div class="score-cell" style="${isCurrentRound ? 'font-weight:bold; color:var(--primary); background:#fcfcfc;' : ''}">${p.scores[i] || '-'}</div>`;
             }
             rows += `<div class="total-row">${p.total}</div>`;
             col.innerHTML = rows;
@@ -279,13 +257,67 @@
         });
     }
 
-    function endGame() {
-        const winner = players.reduce((prev, current) => (prev.total > current.total) ? prev : current);
+    function endGame(isShanghai) {
+        const winner = isShanghai ? players[currentPlayerIdx] : players.reduce((prev, current) => (prev.total > current.total) ? prev : current);
         const box = document.getElementById('winner-box');
         box.style.display = 'block';
-        box.textContent = `🏆 WINNER: ${winner.name}`;
+        
+        if (isShanghai) {
+            box.style.background = "linear-gradient(45deg, #ff0000, #ffc107)";
+            box.innerHTML = `🔥 SHANGHAI! 🔥<br><span style="font-size:1.2rem">${winner.name} wins instantly!</span>`;
+        } else {
+            box.textContent = `🏆 WINNER: ${winner.name} (${winner.total})`;
+        }
+        
         document.querySelector('.btn-group').style.display = 'none';
-        document.getElementById('turn-indicator').textContent = "Game Over";
+        document.getElementById('turn-indicator').textContent = "Game Complete";
+        
+        saveGame(winner, isShanghai);
+        renderScoreboard();
+    }
+
+    function saveGame(winner, isShanghai) {
+        const history = JSON.parse(localStorage.getItem('shanghai_history') || '[]');
+        const gameRecord = {
+            date: gameDate || new Date().toISOString().split('T')[0],
+            mode: selectedMode,
+            winner: winner.name,
+            score: winner.total,
+            isShanghai: isShanghai,
+            players: players.map(p => ({ name: p.name, total: p.total }))
+        };
+        history.unshift(gameRecord);
+        localStorage.setItem('shanghai_history', JSON.stringify(history));
+    }
+
+    function renderHistory() {
+        const list = document.getElementById('history-list');
+        const history = JSON.parse(localStorage.getItem('shanghai_history') || '[]');
+        
+        if(history.length === 0) {
+            list.innerHTML = '<p style="text-align:center; color:#888;">No games played yet.</p>';
+            return;
+        }
+
+        list.innerHTML = history.map(game => `
+            <div class="history-item">
+                <div>
+                    <div class="history-date">${game.date}</div>
+                    <div class="history-meta">${game.mode} ${game.isShanghai ? '(SHANGHAI!)' : ''}</div>
+                </div>
+                <div style="text-align:right">
+                    <div style="font-weight:bold; color:var(--success)">${game.winner}</div>
+                    <div style="font-size:0.8rem">${game.score} pts</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function clearHistory() {
+        if(confirm("Are you sure you want to delete all game history?")) {
+            localStorage.removeItem('shanghai_history');
+            renderHistory();
+        }
     }
 </script>
 
