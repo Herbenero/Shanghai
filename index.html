@@ -120,11 +120,14 @@
         </div>
         
         <div class="btn-group">
-            <button class="btn btn-primary" onclick="recordScore(1)">S</button>
-            <button class="btn btn-primary" onclick="recordScore(2)">D</button>
-            <button class="btn btn-primary" onclick="recordScore(3)">T</button>
-            <button class="btn miss" onclick="recordScore(0)">MISS</button>
-        </div>
+  <button class="btn btn-primary" onclick="recordScore(1)">S</button>
+  <button class="btn btn-primary" onclick="recordScore(2)">D</button>
+  <button class="btn btn-primary" onclick="recordScore(3)">T</button>
+  <button class="btn miss" onclick="recordScore(0)">MISS</button>
+</div>
+
+<!-- Undo Button -->
+<button onclick="undoLastThrow()" class="btn btn-outline" style="margin-top:10px;">↩ Undo Last Dart</button>
         <button onclick="location.reload()" class="btn btn-secondary" style="margin-top:20px; font-size: 0.8rem;">Quit Game</button>
     </div>
 
@@ -137,15 +140,16 @@
 
 <script>
     let players = [];
-    let currentRound = 1;
-    let currentPlayerIdx = 0;
-    let currentDart = 1;
-    let maxRounds = 20;
-    let selectedMode = "Shanghai";
-    let gameDate = "";
-    
-    // Tracks hits in the current turn for Shanghai rule
-    let currentTurnHits = { single: false, double: false, triple: false };
+let currentRound = 1;
+let currentPlayerIdx = 0;
+let currentDart = 1;
+let maxRounds = 20;
+let selectedMode = "Shanghai";
+let gameDate = "";
+let currentTurnHits = { single: false, double: false, triple: false };
+
+// --- Add state history for Undo functionality ---
+let stateHistory = [];
 
     document.getElementById('gameDate').valueAsDate = new Date();
 
@@ -184,30 +188,65 @@
         updateDisplay();
     }
 
-    function recordScore(multiplier) {
-        let points = multiplier * currentRound;
-        players[currentPlayerIdx].scores[currentRound - 1] += points;
-        players[currentPlayerIdx].total += points;
+    // Save current snapshot before each dart throw
+function pushHistory() {
+  stateHistory.push({
+    players: JSON.parse(JSON.stringify(players)),
+    currentRound,
+    currentPlayerIdx,
+    currentDart,
+    currentTurnHits: { ...currentTurnHits }
+  });
+}
 
-        // Track multipliers for the Shanghai rule
-        if (multiplier === 1) currentTurnHits.single = true;
-        if (multiplier === 2) currentTurnHits.double = true;
-        if (multiplier === 3) currentTurnHits.triple = true;
+function recordScore(multiplier) {
+  // Push state before recording score
+  pushHistory();
 
-        // Check for SHANGHAI!
-        if (currentTurnHits.single && currentTurnHits.double && currentTurnHits.triple) {
-            endGame(true);
-            return;
-        }
+  let points = multiplier * currentRound;
+  players[currentPlayerIdx].scores[currentRound - 1] += points;
+  players[currentPlayerIdx].total += points;
 
-        if (currentDart < 3) {
-            currentDart++;
-        } else {
-            nextTurn();
-        }
-        renderScoreboard();
-        updateDisplay();
-    }
+  if (multiplier === 1) currentTurnHits.single = true;
+  if (multiplier === 2) currentTurnHits.double = true;
+  if (multiplier === 3) currentTurnHits.triple = true;
+
+  if (currentTurnHits.single && currentTurnHits.double && currentTurnHits.triple) {
+    endGame(true);
+    return;
+  }
+
+  if (currentDart < 3) {
+    currentDart++;
+  } else {
+    nextTurn();
+  }
+
+  renderScoreboard();
+  updateDisplay();
+}
+
+// Undo the last dart throw
+function undoLastThrow() {
+  if (stateHistory.length === 0) {
+    alert("No actions to undo!");
+    return;
+  }
+
+  const previousState = stateHistory.pop();
+  players = previousState.players;
+  currentRound = previousState.currentRound;
+  currentPlayerIdx = previousState.currentPlayerIdx;
+  currentDart = previousState.currentDart;
+  currentTurnHits = previousState.currentTurnHits;
+
+  // Restore UI state if game ended or buttons were hidden
+  document.querySelector('.btn-group').style.display = 'grid';
+  document.getElementById('winner-box').style.display = 'none';
+
+  renderScoreboard();
+  updateDisplay();
+}
 
     function nextTurn() {
         currentDart = 1;
