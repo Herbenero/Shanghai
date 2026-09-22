@@ -246,24 +246,23 @@
   </div>
 
   <div id="game">
-  <div id="winner-box"></div>
-  
-  <!-- Shanghai Visual Display Container -->
-  <div id="shanghai-display-container" style="text-align: center; margin-bottom: 15px;">
-    <img id="shanghai-image" src="" alt="Shanghai Met" style="display: none; max-width: 250px; height: auto; margin: 0 auto; border-radius: 8px;" />
+  <!-- Winner Box Container with Image Inside -->
+  <div id="winner-box">
+    <div id="winner-text"></div>
+    <div id="shanghai-display-container" style="margin-top: 15px; text-align: center;">
+      <img id="shanghai-image" src="" alt="Shanghai Victory" style="display: none; max-width: 250px; height: auto; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" />
+    </div>
   </div>
 
   <div class="controls">
     <h1 class="main-title" style="font-size: 1.1rem; margin-bottom: 5px;">Hellcastle Shanghai</h1>
+    <div id="game-mode-indicator" style="font-size: 0.7rem; color: #888; margin-bottom:10px;">MODE: SHANGHAI</div>
+    <h2 id="round-title" style="margin:0; color:var(--primary); font-size: 1.3rem;">Round 1</h2>
+    <h3 id="turn-indicator" style="margin:10px 0; font-size: 1.1rem;">Waiting...</h3>
+    <div style="font-size: 1rem; margin-bottom: 10px;">
+      Dart: <span id="dart-count" style="font-weight:bold">1</span> / 3
+    </div>
     ...
-    <div class="controls">
-      <h1 class="main-title" style="font-size: 1.1rem; margin-bottom:5px;">Hellcastle Shanghai</h1>
-      <div id="game-mode-indicator" style="font-size: 0.7rem; color: #888; margin-bottom:10px;">MODE: SHANGHAI</div>
-      <h2 id="round-title" style="margin:0; color:var(--primary); font-size: 1.3rem;">Round 1</h2>
-      <h3 id="turn-indicator" style="margin:10px 0; font-size: 1.1rem;">Waiting...</h3>
-      <div style="font-size: 1rem; margin-bottom: 10px;">
-        Dart: <span id="dart-count" style="font-weight:bold">1</span> / 3
-      </div>
 
       <div class="btn-group" id="btn-group">
         <button class="btn btn-primary" onclick="recordScore(1)">S</button>
@@ -518,22 +517,49 @@ if (shanghaiResult.hit) {
     function endGame(isShanghai, shanghaiMsg, shanghaiType = null) {
   const winner = isShanghai ? players[currentPlayerIdx] : players.reduce((prev, current) => (prev.total > current.total) ? prev : current);
   const box = document.getElementById('winner-box');
+  const winText = document.getElementById('winner-text');
+  
   box.style.display = 'block';
 
   if (isShanghai) {
     box.style.background = "linear-gradient(45deg, #ff0000, #ffc107)";
-    box.innerHTML = `🔥 ${shanghaiMsg.toUpperCase()} 🔥<br><span style="font-size:1.2rem">${winner.name} wins instantly!</span>`;
+    winText.innerHTML = `🔥 ${shanghaiMsg.toUpperCase()} 🔥<br><span style="font-size:1.2rem">${winner.name} wins instantly!</span>`;
     
-    // Display the corresponding Shanghai image
+    // Display the corresponding Shanghai image under the text banner
     handleShanghaiDisplay(shanghaiType);
   } else {
-    box.textContent = `🏆 WINNER: ${winner.name} (${winner.total})`;
+    box.style.background = "var(--warning)";
+    winText.textContent = `🏆 WINNER: ${winner.name} (${winner.total})`;
+    handleShanghaiDisplay(null);
   }
 
   document.getElementById('btn-group').style.display = 'none';
   document.getElementById('turn-indicator').textContent = "Game Complete";
   saveGame(winner, isShanghai, shanghaiMsg);
   renderScoreboard();
+}
+
+function undoLastThrow() {
+  if (stateHistory.length === 0) {
+    alert("No actions to undo!");
+    return;
+  }
+
+  // Hide image if it was displayed
+  handleShanghaiDisplay(null);
+
+  const previousState = stateHistory.pop();
+  players = previousState.players;
+  currentRound = previousState.currentRound;
+  currentPlayerIdx = previousState.currentPlayerIdx;
+  currentDart = previousState.currentDart;
+  currentTurnHits = previousState.currentTurnHits;
+
+  // Restore UI state
+  document.getElementById('btn-group').style.display = 'grid';
+  document.getElementById('winner-box').style.display = 'none';
+  renderScoreboard();
+  updateDisplay();
 }
 
     function saveGame(winner, isShanghai, shanghaiMsg) {
