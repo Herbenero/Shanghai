@@ -246,7 +246,16 @@
   </div>
 
   <div id="game">
-    <div id="winner-box"></div>
+  <div id="winner-box"></div>
+  
+  <!-- Shanghai Visual Display Container -->
+  <div id="shanghai-display-container" style="text-align: center; margin-bottom: 15px;">
+    <img id="shanghai-image" src="" alt="Shanghai Met" style="display: none; max-width: 250px; height: auto; margin: 0 auto; border-radius: 8px;" />
+  </div>
+
+  <div class="controls">
+    <h1 class="main-title" style="font-size: 1.1rem; margin-bottom: 5px;">Hellcastle Shanghai</h1>
+    ...
     <div class="controls">
       <h1 class="main-title" style="font-size: 1.1rem; margin-bottom:5px;">Hellcastle Shanghai</h1>
       <div id="game-mode-indicator" style="font-size: 0.7rem; color: #888; margin-bottom:10px;">MODE: SHANGHAI</div>
@@ -277,6 +286,38 @@
   <div id="alert-overlay"></div>
 
   <script>
+    // --- Shanghai Image Mapping & Handler ---
+function getShanghaiImage(conditionName) {
+  const imageMap = {
+    'Shanghai': 'Shanghai.png',
+    'Leap Shanghai': 'Leap-Shanghai.png',
+    'Sky Shanghai': 'Sky-Shanghai.png',
+    'Royal Shanghai': 'Royal-Shanghai.png'
+  };
+
+  return imageMap[conditionName] || null;
+}
+
+function handleShanghaiDisplay(conditionMet) {
+  const imgElement = document.getElementById('shanghai-image');
+  if (!imgElement) return;
+
+  const imageSrc = getShanghaiImage(conditionMet);
+
+  if (imageSrc) {
+    imgElement.src = imageSrc;
+    imgElement.style.display = 'block';
+  } else {
+    imgElement.style.display = 'none';
+  }
+}
+
+// Example usage when checking turn results / end of turn:
+// If a player hits a Shanghai scenario (e.g., 'Sky Shanghai'):
+// handleShanghaiDisplay('Sky Shanghai');
+//
+// To clear/hide the image on a new turn or game reset:
+// handleShanghaiDisplay(null);
     let players = [];
     let currentRound = 1;
     let currentPlayerIdx = 0;
