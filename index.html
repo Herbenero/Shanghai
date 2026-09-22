@@ -391,29 +391,27 @@ function handleShanghaiDisplay(conditionMet) {
     }
 
     function checkShanghai() {
-      const { single, double, triple, quad } = currentTurnHits;
-
-      if (selectedBoard === "Quad") {
-        if (single && double && triple) {
-          return { hit: true, msg: "You got Shanghai! Game Over" };
-        }
-        if (single && double && quad) {
-          return { hit: true, msg: "You got a Leap Shanghai! Game Over!" };
-        }
-        if (single && triple && quad) {
-          return { hit: true, msg: "You got a Sky Shanghai! Game Over!" };
-        }
-        if (double && triple && quad) {
-          return { hit: true, msg: "You got a Royal Shanghai! Game Over!" };
-        }
-      } else {
-        if (single && double && triple) {
-          return { hit: true, msg: "You got Shanghai! Game Over" };
-        }
-      }
-
-      return { hit: false, msg: "" };
+  const { single, double, triple, quad } = currentTurnHits;
+  if (selectedBoard === "Quad") {
+    if (single && double && triple) {
+      return { hit: true, type: 'Shanghai', msg: "You got Shanghai! Game Over" };
     }
+    if (single && double && quad) {
+      return { hit: true, type: 'Leap Shanghai', msg: "You got a Leap Shanghai! Game Over!" };
+    }
+    if (single && triple && quad) {
+      return { hit: true, type: 'Sky Shanghai', msg: "You got a Sky Shanghai! Game Over!" };
+    }
+    if (double && triple && quad) {
+      return { hit: true, type: 'Royal Shanghai', msg: "You got a Royal Shanghai! Game Over!" };
+    }
+  } else {
+    if (single && double && triple) {
+      return { hit: true, type: 'Shanghai', msg: "You got Shanghai! Game Over" };
+    }
+  }
+  return { hit: false, type: null, msg: "" };
+}
 
     function recordScore(multiplier) {
       pushHistory();
@@ -428,10 +426,10 @@ function handleShanghaiDisplay(conditionMet) {
       if (multiplier === 4) currentTurnHits.quad = true;
 
       const shanghaiResult = checkShanghai();
-      if (shanghaiResult.hit) {
-        endGame(true, shanghaiResult.msg);
-        return;
-      }
+if (shanghaiResult.hit) {
+  endGame(true, shanghaiResult.msg, shanghaiResult.type);
+  return;
+}
 
       if (currentDart < 3) {
         currentDart++;
@@ -444,10 +442,15 @@ function handleShanghaiDisplay(conditionMet) {
 
     // Undo the last dart throw
     function undoLastThrow() {
-      if (stateHistory.length === 0) {
-        alert("No actions to undo!");
-        return;
-      }
+  if (stateHistory.length === 0) {
+    alert("No actions to undo!");
+    return;
+  }
+  
+  // Hide image if it was displayed
+  handleShanghaiDisplay(null);
+
+  // ... rest of undo logic
       const previousState = stateHistory.pop();
       players = previousState.players;
       currentRound = previousState.currentRound;
@@ -512,23 +515,26 @@ function handleShanghaiDisplay(conditionMet) {
       });
     }
 
-    function endGame(isShanghai, shanghaiMsg) {
-      const winner = isShanghai ? players[currentPlayerIdx] : players.reduce((prev, current) => (prev.total > current.total) ? prev : current);
-      const box = document.getElementById('winner-box');
-      box.style.display = 'block';
+    function endGame(isShanghai, shanghaiMsg, shanghaiType = null) {
+  const winner = isShanghai ? players[currentPlayerIdx] : players.reduce((prev, current) => (prev.total > current.total) ? prev : current);
+  const box = document.getElementById('winner-box');
+  box.style.display = 'block';
 
-      if (isShanghai) {
-        box.style.background = "linear-gradient(45deg, #ff0000, #ffc107)";
-        box.innerHTML = `🔥 ${shanghaiMsg.toUpperCase()} 🔥<br><span style="font-size:1.2rem">${winner.name} wins instantly!</span>`;
-      } else {
-        box.textContent = `🏆 WINNER: ${winner.name} (${winner.total})`;
-      }
+  if (isShanghai) {
+    box.style.background = "linear-gradient(45deg, #ff0000, #ffc107)";
+    box.innerHTML = `🔥 ${shanghaiMsg.toUpperCase()} 🔥<br><span style="font-size:1.2rem">${winner.name} wins instantly!</span>`;
+    
+    // Display the corresponding Shanghai image
+    handleShanghaiDisplay(shanghaiType);
+  } else {
+    box.textContent = `🏆 WINNER: ${winner.name} (${winner.total})`;
+  }
 
-      document.getElementById('btn-group').style.display = 'none';
-      document.getElementById('turn-indicator').textContent = "Game Complete";
-      saveGame(winner, isShanghai, shanghaiMsg);
-      renderScoreboard();
-    }
+  document.getElementById('btn-group').style.display = 'none';
+  document.getElementById('turn-indicator').textContent = "Game Complete";
+  saveGame(winner, isShanghai, shanghaiMsg);
+  renderScoreboard();
+}
 
     function saveGame(winner, isShanghai, shanghaiMsg) {
       const history = JSON.parse(localStorage.getItem('shanghai_history') || '[]');
