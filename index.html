@@ -29,7 +29,10 @@
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
-    h1, h2, h3 { margin-top: 0; color: #333; }
+    h1, h2, h3 {
+      margin-top: 0;
+      color: #333;
+    }
     .main-title {
       font-size: 1.5rem;
       font-weight: 800;
@@ -59,7 +62,9 @@
       width: 100%;
       margin-bottom: 10px;
     }
-    .btn:active { opacity: 0.8; }
+    .btn:active {
+      opacity: 0.8;
+    }
     .btn-primary { background: var(--primary); }
     .btn-success { background: var(--success); }
     .btn-secondary { background: var(--secondary); }
@@ -141,6 +146,16 @@
       background: #f1f1f1;
       border-bottom: 2px solid var(--primary);
       font-size: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .full-castle-badge {
+      max-width: 60px;
+      height: auto;
+      margin-top: 5px;
+      display: block;
     }
     .score-cell {
       padding: 6px 0;
@@ -164,8 +179,14 @@
       justify-content: space-between;
       align-items: center;
     }
-    .history-item:last-child { border-bottom: none; }
-    .history-date { font-weight: bold; color: var(--secondary); font-size: 0.9rem; }
+    .history-item:last-child {
+      border-bottom: none;
+    }
+    .history-date {
+      font-weight: bold;
+      color: var(--secondary);
+      font-size: 0.9rem;
+    }
 
     #alert-overlay {
       display: none;
@@ -205,39 +226,32 @@
   </style>
 </head>
 <body>
-
   <div id="setup" class="view-section">
     <h1 class="main-title">Hellcastle Shanghai</h1>
     <div class="tab-nav">
       <button id="tab-new" class="active" onclick="showTab('new')">New Game</button>
       <button id="tab-history" onclick="showTab('history')">History</button>
     </div>
-
     <div id="new-game-panel">
       <label style="font-size: 0.9rem; font-weight: bold;">Game Mode</label>
       <select id="gameMode">
         <option value="Shanghai">Shanghai (1-20)</option>
         <option value="Shanghai 7">Shanghai 7 (1-7)</option>
       </select>
-
       <label style="font-size: 0.9rem; font-weight: bold;">Board Type</label>
       <select id="boardType">
         <option value="Basic">Basic Board</option>
         <option value="Quad">Quad Board</option>
       </select>
-
       <label style="font-size: 0.9rem; font-weight: bold;">Game Date</label>
       <input type="date" id="gameDate">
-
       <div style="margin-top:15px;">
         <input type="text" id="playerName" placeholder="Player Name" inputmode="text">
         <button onclick="addPlayer()" class="btn btn-outline">+ Add Player</button>
       </div>
       <ul id="playerList" style="margin: 15px 0; font-size: 0.9rem;"></ul>
-
       <button onclick="startGame()" class="btn btn-success">Start Match</button>
     </div>
-
     <div id="history-panel" style="display:none;">
       <h3>Previous Games</h3>
       <div id="history-list"></div>
@@ -246,24 +260,22 @@
   </div>
 
   <div id="game">
-  <!-- Winner Box Container with Image Inside -->
-  <div id="winner-box">
-    <div id="winner-text"></div>
-    <div id="shanghai-display-container" style="margin-top: 15px; text-align: center;">
-      <img id="shanghai-image" src="" alt="Shanghai Victory" style="display: none; max-width: 250px; height: auto; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" />
+    <!-- Winner Box Container with Image Inside -->
+    <div id="winner-box">
+      <div id="winner-text"></div>
+      <div id="shanghai-display-container" style="margin-top: 15px; text-align: center;">
+        <img id="shanghai-image" src="" alt="Shanghai Victory" style="display: none; max-width: 250px; height: auto; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" />
+      </div>
     </div>
-  </div>
 
-  <div class="controls">
-    <h1 class="main-title" style="font-size: 1.1rem; margin-bottom: 5px;">Hellcastle Shanghai</h1>
-    <div id="game-mode-indicator" style="font-size: 0.7rem; color: #888; margin-bottom:10px;">MODE: SHANGHAI</div>
-    <h2 id="round-title" style="margin:0; color:var(--primary); font-size: 1.3rem;">Round 1</h2>
-    <h3 id="turn-indicator" style="margin:10px 0; font-size: 1.1rem;">Waiting...</h3>
-    <div style="font-size: 1rem; margin-bottom: 10px;">
-      Dart: <span id="dart-count" style="font-weight:bold">1</span> / 3
-    </div>
-    ...
-
+    <div class="controls">
+      <h1 class="main-title" style="font-size: 1.1rem; margin-bottom: 5px;">Hellcastle Shanghai</h1>
+      <div id="game-mode-indicator" style="font-size: 0.7rem; color: #888; margin-bottom:10px;">MODE: SHANGHAI</div>
+      <h2 id="round-title" style="margin:0; color:var(--primary); font-size: 1.3rem;">Round 1</h2>
+      <h3 id="turn-indicator" style="margin:10px 0; font-size: 1.1rem;">Waiting...</h3>
+      <div style="font-size: 1rem; margin-bottom: 10px;">
+        Dart: <span id="dart-count" style="font-weight:bold">1</span> / 3
+      </div>
       <div class="btn-group" id="btn-group">
         <button class="btn btn-primary" onclick="recordScore(1)">S</button>
         <button class="btn btn-primary" onclick="recordScore(2)">D</button>
@@ -271,7 +283,6 @@
         <button class="btn btn-primary" id="btn-quad" style="display:none;" onclick="recordScore(4)">Q</button>
         <button class="btn miss" onclick="recordScore(0)">MISS</button>
       </div>
-
       <!-- Undo Button -->
       <button onclick="undoLastThrow()" class="btn btn-outline" style="margin-top:10px;">↩ Undo Last Dart</button>
       <button onclick="location.reload()" class="btn btn-secondary" style="margin-top:20px; font-size: 0.8rem;">Quit Game</button>
@@ -286,37 +297,28 @@
 
   <script>
     // --- Shanghai Image Mapping & Handler ---
-function getShanghaiImage(conditionName) {
-  const imageMap = {
-    'Shanghai': 'Shanghai.png',
-    'Leap Shanghai': 'Leap-Shanghai.png',
-    'Sky Shanghai': 'Sky-Shanghai.png',
-    'Royal Shanghai': 'Royal-Shanghai.png'
-  };
+    function getShanghaiImage(conditionName) {
+      const imageMap = {
+        'Shanghai': 'Shanghai.png',
+        'Leap Shanghai': 'Leap-Shanghai.png',
+        'Sky Shanghai': 'Sky-Shanghai.png',
+        'Royal Shanghai': 'Royal-Shanghai.png'
+      };
+      return imageMap[conditionName] || null;
+    }
 
-  return imageMap[conditionName] || null;
-}
+    function handleShanghaiDisplay(conditionMet) {
+      const imgElement = document.getElementById('shanghai-image');
+      if (!imgElement) return;
+      const imageSrc = getShanghaiImage(conditionMet);
+      if (imageSrc) {
+        imgElement.src = imageSrc;
+        imgElement.style.display = 'block';
+      } else {
+        imgElement.style.display = 'none';
+      }
+    }
 
-function handleShanghaiDisplay(conditionMet) {
-  const imgElement = document.getElementById('shanghai-image');
-  if (!imgElement) return;
-
-  const imageSrc = getShanghaiImage(conditionMet);
-
-  if (imageSrc) {
-    imgElement.src = imageSrc;
-    imgElement.style.display = 'block';
-  } else {
-    imgElement.style.display = 'none';
-  }
-}
-
-// Example usage when checking turn results / end of turn:
-// If a player hits a Shanghai scenario (e.g., 'Sky Shanghai'):
-// handleShanghaiDisplay('Sky Shanghai');
-//
-// To clear/hide the image on a new turn or game reset:
-// handleShanghaiDisplay(null);
     let players = [];
     let currentRound = 1;
     let currentPlayerIdx = 0;
@@ -325,9 +327,10 @@ function handleShanghaiDisplay(conditionMet) {
     let selectedMode = "Shanghai";
     let selectedBoard = "Basic";
     let gameDate = "";
+    let isGameOver = false;
     let currentTurnHits = { single: false, double: false, triple: false, quad: false };
 
-    // --- State history for Undo functionality ---
+    // State history for Undo functionality
     let stateHistory = [];
 
     document.getElementById('gameDate').valueAsDate = new Date();
@@ -359,11 +362,12 @@ function handleShanghaiDisplay(conditionMet) {
       selectedBoard = document.getElementById('boardType').value;
       gameDate = document.getElementById('gameDate').value;
       maxRounds = selectedMode === "Shanghai 7" ? 7 : 20;
+      isGameOver = false;
 
       document.getElementById('game-mode-indicator').textContent = `MODE: ${selectedMode.toUpperCase()} (${selectedBoard.toUpperCase()} BOARD)`;
-      
       const btnGroup = document.getElementById('btn-group');
       const btnQuad = document.getElementById('btn-quad');
+      
       if (selectedBoard === "Quad") {
         btnGroup.classList.add('quad-mode');
         btnQuad.style.display = 'block';
@@ -371,50 +375,61 @@ function handleShanghaiDisplay(conditionMet) {
         btnGroup.classList.remove('quad-mode');
         btnQuad.style.display = 'none';
       }
-
+      
       document.getElementById('setup').style.display = 'none';
       document.getElementById('game').style.display = 'flex';
       renderScoreboard();
       updateDisplay();
     }
 
-    // Save current snapshot before each dart throw
     function pushHistory() {
       stateHistory.push({
         players: JSON.parse(JSON.stringify(players)),
         currentRound,
         currentPlayerIdx,
         currentDart,
+        isGameOver,
         currentTurnHits: { ...currentTurnHits }
       });
     }
 
     function checkShanghai() {
-  const { single, double, triple, quad } = currentTurnHits;
-  if (selectedBoard === "Quad") {
-    if (single && double && triple) {
-      return { hit: true, type: 'Shanghai', msg: "You got Shanghai! Game Over" };
+      const { single, double, triple, quad } = currentTurnHits;
+      if (selectedBoard === "Quad") {
+        if (single && double && triple) {
+          return { hit: true, type: 'Shanghai', msg: "You got Shanghai! Game Over" };
+        }
+        if (single && double && quad) {
+          return { hit: true, type: 'Leap Shanghai', msg: "You got a Leap Shanghai! Game Over!" };
+        }
+        if (single && triple && quad) {
+          return { hit: true, type: 'Sky Shanghai', msg: "You got a Sky Shanghai! Game Over!" };
+        }
+        if (double && triple && quad) {
+          return { hit: true, type: 'Royal Shanghai', msg: "You got a Royal Shanghai! Game Over!" };
+        }
+      } else {
+        if (single && double && triple) {
+          return { hit: true, type: 'Shanghai', msg: "You got Shanghai! Game Over" };
+        }
+      }
+      return { hit: false, type: null, msg: "" };
     }
-    if (single && double && quad) {
-      return { hit: true, type: 'Leap Shanghai', msg: "You got a Leap Shanghai! Game Over!" };
+
+    /**
+     * Checks if a player hit every number (scored > 0 in all rounds played)
+     */
+    function hasHitEveryNumber(player) {
+      for (let i = 0; i < maxRounds; i++) {
+        if (!player.scores[i] || player.scores[i] === 0) {
+          return false;
+        }
+      }
+      return true;
     }
-    if (single && triple && quad) {
-      return { hit: true, type: 'Sky Shanghai', msg: "You got a Sky Shanghai! Game Over!" };
-    }
-    if (double && triple && quad) {
-      return { hit: true, type: 'Royal Shanghai', msg: "You got a Royal Shanghai! Game Over!" };
-    }
-  } else {
-    if (single && double && triple) {
-      return { hit: true, type: 'Shanghai', msg: "You got Shanghai! Game Over" };
-    }
-  }
-  return { hit: false, type: null, msg: "" };
-}
 
     function recordScore(multiplier) {
       pushHistory();
-
       let points = multiplier * currentRound;
       players[currentPlayerIdx].scores[currentRound - 1] += points;
       players[currentPlayerIdx].total += points;
@@ -425,10 +440,10 @@ function handleShanghaiDisplay(conditionMet) {
       if (multiplier === 4) currentTurnHits.quad = true;
 
       const shanghaiResult = checkShanghai();
-if (shanghaiResult.hit) {
-  endGame(true, shanghaiResult.msg, shanghaiResult.type);
-  return;
-}
+      if (shanghaiResult.hit) {
+        endGame(true, shanghaiResult.msg, shanghaiResult.type);
+        return;
+      }
 
       if (currentDart < 3) {
         currentDart++;
@@ -439,25 +454,20 @@ if (shanghaiResult.hit) {
       updateDisplay();
     }
 
-    // Undo the last dart throw
     function undoLastThrow() {
-  if (stateHistory.length === 0) {
-    alert("No actions to undo!");
-    return;
-  }
-  
-  // Hide image if it was displayed
-  handleShanghaiDisplay(null);
-
-  // ... rest of undo logic
+      if (stateHistory.length === 0) {
+        alert("No actions to undo!");
+        return;
+      }
+      handleShanghaiDisplay(null);
       const previousState = stateHistory.pop();
       players = previousState.players;
       currentRound = previousState.currentRound;
       currentPlayerIdx = previousState.currentPlayerIdx;
       currentDart = previousState.currentDart;
       currentTurnHits = previousState.currentTurnHits;
+      isGameOver = previousState.isGameOver;
 
-      // Restore UI state if game ended or buttons were hidden
       document.getElementById('btn-group').style.display = 'grid';
       document.getElementById('winner-box').style.display = 'none';
       renderScoreboard();
@@ -500,14 +510,24 @@ if (shanghaiResult.hit) {
     function renderScoreboard() {
       const container = document.getElementById('scoreboard');
       container.innerHTML = '';
+      
       players.forEach((p, idx) => {
         const col = document.createElement('div');
         col.className = 'player-col';
-        let rows = `<div class="player-header" style="${idx === currentPlayerIdx ? 'background:#e7f3ff;' : ''}">${p.name}</div>`;
+        
+        const hasFullCastle = isGameOver && hasHitEveryNumber(p);
+        const fullCastleImgTag = hasFullCastle ? `<img src="FullCastle.png" alt="Full Castle" class="full-castle-badge">` : '';
+
+        let rows = `<div class="player-header" style="${idx === currentPlayerIdx && !isGameOver ? 'background:#e7f3ff;' : ''}">
+                      <span>${p.name}</span>
+                      ${fullCastleImgTag}
+                    </div>`;
+
         for (let i = 0; i < maxRounds; i++) {
-          const isCurrentRound = (i === currentRound - 1);
+          const isCurrentRound = (i === currentRound - 1) && !isGameOver;
           rows += `<div class="score-cell" style="${isCurrentRound ? 'font-weight:bold; color:var(--primary); background:#fcfcfc;' : ''}">${p.scores[i] || '-'}</div>`;
         }
+
         rows += `<div class="total-row">${p.total}</div>`;
         col.innerHTML = rows;
         container.appendChild(col);
@@ -515,52 +535,27 @@ if (shanghaiResult.hit) {
     }
 
     function endGame(isShanghai, shanghaiMsg, shanghaiType = null) {
-  const winner = isShanghai ? players[currentPlayerIdx] : players.reduce((prev, current) => (prev.total > current.total) ? prev : current);
-  const box = document.getElementById('winner-box');
-  const winText = document.getElementById('winner-text');
-  
-  box.style.display = 'block';
+      isGameOver = true;
+      const winner = isShanghai ? players[currentPlayerIdx] : players.reduce((prev, current) => (prev.total > current.total) ? prev : current);
+      const box = document.getElementById('winner-box');
+      const winText = document.getElementById('winner-text');
+      
+      box.style.display = 'block';
+      if (isShanghai) {
+        box.style.background = "linear-gradient(45deg, #ff0000, #ffc107)";
+        winText.innerHTML = `🔥 ${shanghaiMsg.toUpperCase()} 🔥<br><span style="font-size:1.2rem">${winner.name} wins instantly!</span>`;
+        handleShanghaiDisplay(shanghaiType);
+      } else {
+        box.style.background = "var(--warning)";
+        winText.textContent = `🏆 WINNER: ${winner.name} (${winner.total})`;
+        handleShanghaiDisplay(null);
+      }
 
-  if (isShanghai) {
-    box.style.background = "linear-gradient(45deg, #ff0000, #ffc107)";
-    winText.innerHTML = `🔥 ${shanghaiMsg.toUpperCase()} 🔥<br><span style="font-size:1.2rem">${winner.name} wins instantly!</span>`;
-    
-    // Display the corresponding Shanghai image under the text banner
-    handleShanghaiDisplay(shanghaiType);
-  } else {
-    box.style.background = "var(--warning)";
-    winText.textContent = `🏆 WINNER: ${winner.name} (${winner.total})`;
-    handleShanghaiDisplay(null);
-  }
-
-  document.getElementById('btn-group').style.display = 'none';
-  document.getElementById('turn-indicator').textContent = "Game Complete";
-  saveGame(winner, isShanghai, shanghaiMsg);
-  renderScoreboard();
-}
-
-function undoLastThrow() {
-  if (stateHistory.length === 0) {
-    alert("No actions to undo!");
-    return;
-  }
-
-  // Hide image if it was displayed
-  handleShanghaiDisplay(null);
-
-  const previousState = stateHistory.pop();
-  players = previousState.players;
-  currentRound = previousState.currentRound;
-  currentPlayerIdx = previousState.currentPlayerIdx;
-  currentDart = previousState.currentDart;
-  currentTurnHits = previousState.currentTurnHits;
-
-  // Restore UI state
-  document.getElementById('btn-group').style.display = 'grid';
-  document.getElementById('winner-box').style.display = 'none';
-  renderScoreboard();
-  updateDisplay();
-}
+      document.getElementById('btn-group').style.display = 'none';
+      document.getElementById('turn-indicator').textContent = "Game Complete";
+      saveGame(winner, isShanghai, shanghaiMsg);
+      renderScoreboard();
+    }
 
     function saveGame(winner, isShanghai, shanghaiMsg) {
       const history = JSON.parse(localStorage.getItem('shanghai_history') || '[]');
@@ -580,7 +575,7 @@ function undoLastThrow() {
     function renderHistory() {
       const list = document.getElementById('history-list');
       const history = JSON.parse(localStorage.getItem('shanghai_history') || '[]');
-      if(history.length === 0) {
+      if (history.length === 0) {
         list.innerHTML = '<p style="text-align:center; color:#888;">No games played yet.</p>';
         return;
       }
@@ -599,7 +594,7 @@ function undoLastThrow() {
     }
 
     function clearHistory() {
-      if(confirm("Are you sure you want to delete all game history?")) {
+      if (confirm("Are you sure you want to delete all game history?")) {
         localStorage.removeItem('shanghai_history');
         renderHistory();
       }
