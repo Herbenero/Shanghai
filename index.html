@@ -14,13 +14,19 @@
       --bg: #f8f9fa;
       --card-bg: #ffffff;
     }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 10px;
-      background: var(--bg);
-      touch-action: manipulation;
-    }
+   body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    background-color: var(--bg);
+    background-image: linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), url('Shanghai.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: var(--ink);
+    padding: 18px;
+    min-height: 100vh;
+}
     .view-section {
       max-width: 600px;
       margin: 10px auto;
