@@ -1,605 +1,761 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Hellcastle Shanghai</title>
-<style>
-:root {
-    --primary: #007bff;
-    --secondary: #6c757d;
-    --success: #28a745;
-    --warning: #ffc107;
-    --danger: #dc3545;
-    --bg: #f8f9fa;
-    --card-bg: #ffffff;
-}
-body {
-    margin: 0;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
-    background-color: var(--bg);
-    background-image: linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), url('Shanghai.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    color: var(--ink);
-    padding: 18px;
-    min-height: 100vh;
-}
-.view-section {
-    max-width: 600px;
-    margin: 10px auto;
-    background: var(--card-bg);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-h1, h2, h3 {
-    margin-top: 0;
-    color: #333;
-}
-.main-title {
-    font-size: 1.5rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 15px;
-    text-align: center;
-}
-input, select {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    box-sizing: border-box;
-}
-.btn {
-    padding: 12px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    transition: opacity 0.2s;
-    width: 100%;
-    margin-bottom: 10px;
-}
-.btn:active {
-    opacity: 0.8;
-}
-.btn-primary {
-    background: var(--primary);
-}
-.btn-success {
-    background: var(--success);
-}
-.btn-secondary {
-    background: var(--secondary);
-}
-.btn-outline {
-    background: transparent;
-    color: var(--primary);
-    border: 1px solid var(--primary);
-}
-/* Game UI */
-#game {
-    display: none;
-    flex-direction: column;
-    gap: 15px;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-@media (min-width: 768px) {
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Hellcastle Shanghai</title>
+  <style>
+    :root {
+      --primary: #007bff;
+      --secondary: #6c757d;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      background-color: var(--bg);
+      background-image: linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), url('Shanghai.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: var(--ink);
+      padding: 18px;
+      min-height: 100vh;
+    }
+    .view-section {
+      max-width: 600px;
+      margin: 10px auto;
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h1, h2, h3 {
+      margin-top: 0;
+      color: #333;
+    }
+    .main-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .btn {
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      transition: opacity 0.2s;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .btn:active {
+      opacity: 0.8;
+    }
+    .btn-primary {
+      background: var(--primary);
+    }
+    .btn-success {
+      background: var(--success);
+    }
+    .btn-secondary {
+      background: var(--secondary);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    /* Game UI */
     #game {
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    @media (min-width: 768px) {
+      #game {
         flex-direction: row;
         align-items: flex-start;
+        flex-wrap: wrap;
+      }
     }
-}
-#winner-box {
-    display: none;
-    padding: 20px;
-    background: var(--warning);
-    color: #000;
-    font-weight: bold;
-    font-size: 1.5rem;
-    text-align: center;
-    border-radius: 12px;
-    margin-bottom: 15px;
-}
-.controls {
-    flex: 1;
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-.btn-group {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 15px;
-}
-.btn-group.quad-mode {
-    grid-template-columns: repeat(4, 1fr);
-}
-.btn-group .miss {
-    grid-column: 1 / -1;
-    background: var(--secondary);
-}
-/* Scoreboard */
-.scoreboard-wrapper {
-    flex: 1.5;
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-.scoreboard-container {
-    display: flex;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-.player-col {
-    flex: 1;
-    min-width: 80px;
-    text-align: center;
-    border-right: 1px solid #eee;
-}
-.player-header {
-    font-weight: bold;
-    padding: 12px 5px;
-    background: #f1f1f1;
-    border-bottom: 2px solid var(--primary);
-    font-size: 0.9rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-.full-castle-badge {
-    max-width: 60px;
-    height: auto;
-    margin-top: 5px;
-    display: block;
-}
-.score-cell {
-    padding: 6px 0;
-    border-bottom: 1px solid #eee;
-    font-size: 0.85rem;
-    height: 18px;
-}
-.total-row {
-    font-weight: bold;
-    background: #e9ecef;
-    padding: 12px 0;
-    color: var(--primary);
-    font-size: 1rem;
-}
-/* History */
-.history-item {
-    border-bottom: 1px solid #eee;
-    padding: 10px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.history-item:last-child {
-    border-bottom: none;
-}
-.history-date {
-    font-weight: bold;
-    color: var(--secondary);
-    font-size: 0.9rem;
-}
-#alert-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.9);
-    color: white;
-    justify-content: center;
-    align-items: center;
-    font-size: 2rem;
-    z-index: 100;
-    text-align: center;
-    padding: 20px;
-    box-sizing: border-box;
-}
-.tab-nav {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-.tab-nav button {
-    flex: 1;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    background: white;
-    cursor: pointer;
-}
-.tab-nav button.active {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-}
-</style>
+    #winner-box {
+      display: none;
+      width: 100%;
+      padding: 20px;
+      background: var(--warning);
+      color: #000;
+      font-weight: bold;
+      font-size: 1.5rem;
+      text-align: center;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+    .league-submit-bar {
+      max-width: 440px;
+      margin: 16px auto 0;
+      padding: 14px;
+      background: rgba(18, 18, 18, 0.92);
+      border-radius: 10px;
+      color: #ffffff;
+      text-align: left;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+    .league-submit-bar label {
+      display: block;
+      margin-bottom: 6px;
+      color: #ffd700;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .league-submit-bar select {
+      background: #2a2a2a;
+      color: #ffffff;
+      border: 1px solid #444;
+      margin-bottom: 10px;
+    }
+    .btn-league {
+      background: linear-gradient(180deg, #48bb78, #2f855a);
+      color: #ffffff;
+      margin-bottom: 0;
+    }
+    .league-sync-status {
+      display: block;
+      text-align: center;
+      color: #ffd700;
+      font-size: 0.85rem;
+      margin-top: 6px;
+    }
+    .controls {
+      flex: 1;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .btn-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .btn-group.quad-mode {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .btn-group .miss {
+      grid-column: 1 / -1;
+      background: var(--secondary);
+    }
+
+    /* Scoreboard */
+    .scoreboard-wrapper {
+      flex: 1.5;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .scoreboard-container {
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .player-col {
+      flex: 1;
+      min-width: 80px;
+      text-align: center;
+      border-right: 1px solid #eee;
+    }
+    .player-header {
+      font-weight: bold;
+      padding: 12px 5px;
+      background: #f1f1f1;
+      border-bottom: 2px solid var(--primary);
+      font-size: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .full-castle-badge {
+      max-width: 60px;
+      height: auto;
+      margin-top: 5px;
+      display: block;
+    }
+    .score-cell {
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 0.85rem;
+      height: 18px;
+    }
+    .total-row {
+      font-weight: bold;
+      background: #e9ecef;
+      padding: 12px 0;
+      color: var(--primary);
+      font-size: 1rem;
+    }
+
+    /* History */
+    .history-item {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .history-item:last-child {
+      border-bottom: none;
+    }
+    .history-date {
+      font-weight: bold;
+      color: var(--secondary);
+      font-size: 0.9rem;
+    }
+    #alert-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      color: white;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      z-index: 100;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .tab-nav {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tab-nav button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+    }
+    .tab-nav button.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+  </style>
 </head>
 <body>
-
-<div id="setup" class="view-section">
+  <div id="setup" class="view-section">
     <h1 class="main-title">Hellcastle Shanghai</h1>
     <div class="tab-nav">
-        <button id="tab-new" class="active" onclick="showTab('new')">New Game</button>
-        <button id="tab-history" onclick="showTab('history')">History</button>
+      <button id="tab-new" class="active" onclick="showTab('new')">New Game</button>
+      <button id="tab-history" onclick="showTab('history')">History</button>
     </div>
-    
+
     <div id="new-game-panel">
-        <label style="font-size: 0.9rem; font-weight: bold;">Game Mode</label>
-        <select id="gameMode">
-            <option value="Shanghai">Shanghai (1-20)</option>
-            <option value="Shanghai 7">Shanghai 7 (1-7)</option>
-        </select>
+      <label style="font-size: 0.9rem; font-weight: bold;">Game Mode</label>
+      <select id="gameMode">
+        <option value="Shanghai">Shanghai (1-20)</option>
+        <option value="Shanghai 7">Shanghai 7 (1-7)</option>
+      </select>
 
-        <label style="font-size: 0.9rem; font-weight: bold;">Board Type</label>
-        <select id="boardType">
-            <option value="Basic">Basic Board</option>
-            <option value="Quad">Quad Board</option>
-        </select>
+      <label style="font-size: 0.9rem; font-weight: bold;">Board Type</label>
+      <select id="boardType">
+        <option value="Basic">Basic Board</option>
+        <option value="Quad">Quad Board</option>
+      </select>
 
-        <label style="font-size: 0.9rem; font-weight: bold;">Game Date</label>
-        <input type="date" id="gameDate">
+      <label style="font-size: 0.9rem; font-weight: bold;">Game Date</label>
+      <input type="date" id="gameDate">
 
-        <div style="margin-top:15px;">
-            <input type="text" id="playerName" placeholder="Player Name" inputmode="text">
-            <button onclick="addPlayer()" class="btn btn-outline">+ Add Player</button>
-        </div>
-        <ul id="playerList" style="margin: 15px 0; font-size: 0.9rem;"></ul>
+      <div style="margin-top:15px;">
+        <input type="text" id="playerName" placeholder="Player Name" inputmode="text">
+        <button onclick="addPlayer()" class="btn btn-outline">+ Add Player</button>
+      </div>
 
-        <!-- Randomize Players Checkbox Added Here -->
-        <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: bold;">
-            <input type="checkbox" id="randomizePlayers" style="width: auto; margin-bottom: 0; cursor: pointer;">
-            <label for="randomizePlayers" style="cursor: pointer; margin-bottom: 0;">Randomize Player Order</label>
-        </div>
+      <ul id="playerList" style="margin: 15px 0; font-size: 0.9rem;"></ul>
 
-        <button onclick="startGame()" class="btn btn-success">Start Match</button>
+      <!-- Randomize Players Checkbox -->
+      <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: bold;">
+        <input type="checkbox" id="randomizePlayers" style="width: auto; margin-bottom: 0; cursor: pointer;">
+        <label for="randomizePlayers" style="cursor: pointer; margin-bottom: 0;">Randomize Player Order</label>
+      </div>
+
+      <button onclick="startGame()" class="btn btn-success">Start Match</button>
     </div>
 
     <div id="history-panel" style="display:none;">
-        <h3>Previous Games</h3>
-        <div id="history-list"></div>
-        <button onclick="clearHistory()" class="btn" style="background:var(--danger); margin-top:20px;">Clear All History</button>
+      <h3>Previous Games</h3>
+      <div id="history-list"></div>
+      <button onclick="clearHistory()" class="btn" style="background:var(--danger); margin-top:20px;">Clear All History</button>
     </div>
-</div>
+  </div>
 
-<div id="game">
-    <!-- Winner Box Container with Image Inside -->
+  <div id="game">
+    <!-- Winner Box Container with Image Inside & League Submission -->
     <div id="winner-box">
-        <div id="winner-text"></div>
-        <div id="shanghai-display-container" style="margin-top: 15px; text-align: center;">
-            <img id="shanghai-image" src="" alt="Shanghai Victory" style="display: none; max-width: 250px; height: auto; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" />
-        </div>
+      <div id="winner-text"></div>
+      <div id="shanghai-display-container" style="margin-top: 15px; text-align: center;">
+        <img id="shanghai-image" src="" alt="Shanghai Victory" style="display: none; max-width: 250px; height: auto; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" />
+      </div>
+
+      <div class="league-submit-bar">
+        <label for="targetLeagueSelect">🏆 Submit Results to Hellcastle League:</label>
+        <select id="targetLeagueSelect" aria-label="Target League">
+          <option value="Royal Couple">Royal Couple</option>
+          <option value="Papal 1">Papal 1</option>
+          <option value="Faubion 1">Faubion 1</option>
+        </select>
+        <button type="button" class="btn btn-league" id="sendToLeagueBtn" onclick="sendToLeagueForm()">🚀 Send to League Form</button>
+        <span class="league-sync-status" id="leagueSyncStatus"></span>
+      </div>
     </div>
 
     <div class="controls">
-        <h1 class="main-title" style="font-size: 1.1rem; margin-bottom: 5px;">Hellcastle Shanghai</h1>
-        <div id="game-mode-indicator" style="font-size: 0.7rem; color: #888; margin-bottom:10px;">MODE: SHANGHAI</div>
-        
-        <h2 id="round-title" style="margin:0; color:var(--primary); font-size: 1.3rem;">Round 1</h2>
-        <h3 id="turn-indicator" style="margin:10px 0; font-size: 1.1rem;">Waiting...</h3>
-        
-        <div style="font-size: 1rem; margin-bottom: 10px;">
-            Dart: <span id="dart-count" style="font-weight:bold">1</span> / 3
-        </div>
-
-        <div class="btn-group" id="btn-group">
-            <button class="btn btn-primary" onclick="recordScore(1)">S</button>
-            <button class="btn btn-primary" onclick="recordScore(2)">D</button>
-            <button class="btn btn-primary" onclick="recordScore(3)">T</button>
-            <button class="btn btn-primary" id="btn-quad" style="display:none;" onclick="recordScore(4)">Q</button>
-            <button class="btn miss" onclick="recordScore(0)">MISS</button>
-        </div>
-
-        <!-- Undo Button -->
-        <button onclick="undoLastThrow()" class="btn btn-outline" style="margin-top:10px;">↩ Undo Last Dart</button>
-        <button onclick="location.reload()" class="btn btn-secondary" style="margin-top:20px; font-size: 0.8rem;">Quit Game</button>
+      <h1 class="main-title" style="font-size: 1.1rem; margin-bottom: 5px;">Hellcastle Shanghai</h1>
+      <div id="game-mode-indicator" style="font-size: 0.7rem; color: #888; margin-bottom:10px;">MODE: SHANGHAI</div>
+      <h2 id="round-title" style="margin:0; color:var(--primary); font-size: 1.3rem;">Round 1</h2>
+      <h3 id="turn-indicator" style="margin:10px 0; font-size: 1.1rem;">Waiting...</h3>
+      <div style="font-size: 1rem; margin-bottom: 10px;">
+        Dart: <span id="dart-count" style="font-weight:bold">1</span> / 3
+      </div>
+      <div class="btn-group" id="btn-group">
+        <button class="btn btn-primary" onclick="recordScore(1)">S</button>
+        <button class="btn btn-primary" onclick="recordScore(2)">D</button>
+        <button class="btn btn-primary" onclick="recordScore(3)">T</button>
+        <button class="btn btn-primary" id="btn-quad" style="display:none;" onclick="recordScore(4)">Q</button>
+        <button class="btn miss" onclick="recordScore(0)">MISS</button>
+      </div>
+      <!-- Undo Button -->
+      <button onclick="undoLastThrow()" class="btn btn-outline" style="margin-top:10px;">↩ Undo Last Dart</button>
+      <button onclick="location.reload()" class="btn btn-secondary" style="margin-top:20px; font-size: 0.8rem;">Quit Game</button>
     </div>
 
     <div class="scoreboard-wrapper">
-        <div class="scoreboard-container" id="scoreboard"></div>
+      <div class="scoreboard-container" id="scoreboard"></div>
     </div>
-</div>
+  </div>
 
-<div id="alert-overlay"></div>
+  <div id="alert-overlay"></div>
 
-<script>
-// --- Shanghai Image Mapping & Handler ---
-function getShanghaiImage(conditionName) {
-    const imageMap = {
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBvL2K8R82qk3fG4EEKZ6sOIiieLcCKckA",
+      authDomain: "haal-fc862.firebaseapp.com",
+      projectId: "haal-fc862",
+      storageBucket: "haal-fc862.firebasestorage.app",
+      messagingSenderId: "1077392905739",
+      appId: "1:1077392905739:web:cc047fae886356663fd90e",
+      measurementId: "G-P99RVN1XBF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const LEAGUE_URL = "https://herbenero.github.io/Hellcastle-League/";
+
+    // --- Shanghai Image Mapping & Handler ---
+    function getShanghaiImage(conditionName) {
+      const imageMap = {
         'Shanghai': 'Shanghai.png',
         'Leap Shanghai': 'Leap-Shanghai.png',
         'Sky Shanghai': 'Sky-Shanghai.png',
         'Royal Shanghai': 'Royal-Shanghai.png'
-    };
-    return imageMap[conditionName] || null;
-}
+      };
+      return imageMap[conditionName] || null;
+    }
 
-function handleShanghaiDisplay(conditionMet) {
-    const imgElement = document.getElementById('shanghai-image');
-    if (!imgElement) return;
-    const imageSrc = getShanghaiImage(conditionMet);
-    if (imageSrc) {
+    function handleShanghaiDisplay(conditionMet) {
+      const imgElement = document.getElementById('shanghai-image');
+      if (!imgElement) return;
+      const imageSrc = getShanghaiImage(conditionMet);
+      if (imageSrc) {
         imgElement.src = imageSrc;
         imgElement.style.display = 'block';
-    } else {
+      } else {
         imgElement.style.display = 'none';
+      }
     }
-}
 
-let players = [];
-let currentRound = 1;
-let currentPlayerIdx = 0;
-let currentDart = 1;
-let maxRounds = 20;
-let selectedMode = "Shanghai";
-let selectedBoard = "Basic";
-let gameDate = "";
-let isGameOver = false;
-let currentTurnHits = { single: false, double: false, triple: false, quad: false };
+    let players = [];
+    let currentRound = 1;
+    let currentPlayerIdx = 0;
+    let currentDart = 1;
+    let maxRounds = 20;
+    let selectedMode = "Shanghai";
+    let selectedBoard = "Basic";
+    let gameDate = "";
+    let isGameOver = false;
+    let winningShanghaiInfo = null; // { playerIndex, type }
+    let currentTurnHits = { single: false, double: false, triple: false, quad: false };
 
-// State history for Undo functionality
-let stateHistory = [];
+    // State history for Undo functionality
+    let stateHistory = [];
 
-document.getElementById('gameDate').valueAsDate = new Date();
+    document.getElementById('gameDate').valueAsDate = new Date();
 
-function showTab(tab) {
-    document.getElementById('new-game-panel').style.display = tab === 'new' ? 'block' : 'none';
-    document.getElementById('history-panel').style.display = tab === 'history' ? 'block' : 'none';
-    document.getElementById('tab-new').className = tab === 'new' ? 'active' : '';
-    document.getElementById('tab-history').className = tab === 'history' ? 'active' : '';
-    if(tab === 'history') renderHistory();
-}
+    async function loadSavedLeagues() {
+      const select = document.getElementById('targetLeagueSelect');
+      if (!select) return;
+      try {
+        const snapshot = await getDocs(collection(db, "leagues"));
+        const seen = new Set();
+        const options = [];
 
-function addPlayer() {
-    const input = document.getElementById('playerName');
-    const name = input.value.trim();
-    if (name) {
+        snapshot.forEach(docSnap => {
+          const data = docSnap.data();
+          const rawName = (data.leagueName || docSnap.id || "").trim();
+          const norm = rawName.toLowerCase().replace(/[^a-z0-9]/g, "");
+          if (rawName && !seen.has(norm)) {
+            seen.add(norm);
+            options.push(rawName);
+          }
+        });
+
+        if (options.length > 0) {
+          const prevVal = localStorage.getItem('haalis_selected_target_league') || select.value;
+          select.innerHTML = options
+            .map(name => `<option value="${name.replace(/"/g, '&quot;')}">${name}</option>`)
+            .join("");
+          if (prevVal && options.some(o => o.toLowerCase() === prevVal.toLowerCase())) {
+            const matched = options.find(o => o.toLowerCase() === prevVal.toLowerCase());
+            select.value = matched;
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch leagues from Firestore:", err);
+      }
+    }
+
+    function sendToLeagueForm() {
+      if (!players || players.length === 0) {
+        alert("No player scores available to send.");
+        return;
+      }
+
+      const select = document.getElementById('targetLeagueSelect');
+      const selectedLeague = select ? select.value.trim() : "Royal Couple";
+      localStorage.setItem('haalis_selected_target_league', selectedLeague);
+
+      const eventName = selectedMode === "Shanghai 7" ? "Shanghai 7" : "Shanghai";
+
+      const rankedPlayers = players
+        .map((p, idx) => {
+          const badges = [];
+          if (winningShanghaiInfo && winningShanghaiInfo.playerIndex === idx && winningShanghaiInfo.type) {
+            badges.push(`🔥 ${winningShanghaiInfo.type}!`);
+          }
+          if (hasHitEveryNumber(p)) {
+            badges.push(`🏰 Full Castle Badge`);
+          }
+          badges.push(`${selectedBoard} Board`);
+
+          return {
+            name: p.name,
+            score: p.total,
+            notes: badges.join(" | ")
+          };
+        })
+        .sort((a, b) => b.score - a.score);
+
+      const payload = {
+        leagueName: selectedLeague,
+        event: eventName,
+        timestamp: new Date().toISOString(),
+        players: rankedPlayers
+      };
+
+      try {
+        localStorage.setItem("haalis_pending_match", JSON.stringify(payload));
+      } catch (e) {
+        console.warn("localStorage unavailable, relying on URL payload:", e);
+      }
+
+      const statusEl = document.getElementById('leagueSyncStatus');
+      if (statusEl) {
+        statusEl.textContent = `Sending results to ${selectedLeague}...`;
+      }
+
+      const targetUrl = new URL(LEAGUE_URL);
+      targetUrl.searchParams.set("league", selectedLeague);
+      targetUrl.searchParams.set("event", eventName);
+      targetUrl.searchParams.set("match", JSON.stringify(payload));
+      window.location.href = targetUrl.toString();
+    }
+
+    function showTab(tab) {
+      document.getElementById('new-game-panel').style.display = tab === 'new' ? 'block' : 'none';
+      document.getElementById('history-panel').style.display = tab === 'history' ? 'block' : 'none';
+      document.getElementById('tab-new').className = tab === 'new' ? 'active' : '';
+      document.getElementById('tab-history').className = tab === 'history' ? 'active' : '';
+      if (tab === 'history') renderHistory();
+    }
+
+    function addPlayer() {
+      const input = document.getElementById('playerName');
+      const name = input.value.trim();
+      if (name) {
         players.push({ name: name, scores: Array(20).fill(0), total: 0 });
         const li = document.createElement('li');
         li.textContent = name;
         document.getElementById('playerList').appendChild(li);
         input.value = '';
         input.focus();
+      }
     }
-}
 
-function startGame() {
-    if (players.length === 0) return alert("Please add players first.");
-    
-    // Check if player order should be randomized
-    const shouldRandomize = document.getElementById('randomizePlayers').checked;
-    if (shouldRandomize) {
+    function startGame() {
+      if (players.length === 0) return alert("Please add players first.");
+
+      // Check if player order should be randomized
+      const shouldRandomize = document.getElementById('randomizePlayers').checked;
+      if (shouldRandomize) {
         for (let i = players.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [players[i], players[j]] = [players[j], players[i]];
+          const j = Math.floor(Math.random() * (i + 1));
+          [players[i], players[j]] = [players[j], players[i]];
         }
-    }
+      }
 
-    selectedMode = document.getElementById('gameMode').value;
-    selectedBoard = document.getElementById('boardType').value;
-    gameDate = document.getElementById('gameDate').value;
-    maxRounds = selectedMode === "Shanghai 7" ? 7 : 20;
-    isGameOver = false;
+      selectedMode = document.getElementById('gameMode').value;
+      selectedBoard = document.getElementById('boardType').value;
+      gameDate = document.getElementById('gameDate').value;
+      maxRounds = selectedMode === "Shanghai 7" ? 7 : 20;
+      isGameOver = false;
+      winningShanghaiInfo = null;
 
-    document.getElementById('game-mode-indicator').textContent = `MODE: ${selectedMode.toUpperCase()} (${selectedBoard.toUpperCase()} BOARD)`;
+      document.getElementById('game-mode-indicator').textContent = `MODE: ${selectedMode.toUpperCase()} (${selectedBoard.toUpperCase()} BOARD)`;
 
-    const btnGroup = document.getElementById('btn-group');
-    const btnQuad = document.getElementById('btn-quad');
-    if (selectedBoard === "Quad") {
+      const btnGroup = document.getElementById('btn-group');
+      const btnQuad = document.getElementById('btn-quad');
+      if (selectedBoard === "Quad") {
         btnGroup.classList.add('quad-mode');
         btnQuad.style.display = 'block';
-    } else {
+      } else {
         btnGroup.classList.remove('quad-mode');
         btnQuad.style.display = 'none';
+      }
+
+      document.getElementById('setup').style.display = 'none';
+      document.getElementById('game').style.display = 'flex';
+      renderScoreboard();
+      updateDisplay();
     }
 
-    document.getElementById('setup').style.display = 'none';
-    document.getElementById('game').style.display = 'flex';
-
-    renderScoreboard();
-    updateDisplay();
-}
-
-function pushHistory() {
-    stateHistory.push({
+    function pushHistory() {
+      stateHistory.push({
         players: JSON.parse(JSON.stringify(players)),
         currentRound,
         currentPlayerIdx,
         currentDart,
         isGameOver,
+        winningShanghaiInfo: winningShanghaiInfo ? { ...winningShanghaiInfo } : null,
         currentTurnHits: { ...currentTurnHits }
-    });
-}
+      });
+    }
 
-function checkShanghai() {
-    const { single, double, triple, quad } = currentTurnHits;
-    if (selectedBoard === "Quad") {
+    function checkShanghai() {
+      const { single, double, triple, quad } = currentTurnHits;
+      if (selectedBoard === "Quad") {
         if (single && double && triple) {
-            return { hit: true, type: 'Shanghai', msg: "You got Shanghai! Game Over" };
+          return { hit: true, type: 'Shanghai', msg: "You got Shanghai! Game Over" };
         }
         if (single && double && quad) {
-            return { hit: true, type: 'Leap Shanghai', msg: "You got a Leap Shanghai! Game Over!" };
+          return { hit: true, type: 'Leap Shanghai', msg: "You got a Leap Shanghai! Game Over!" };
         }
         if (single && triple && quad) {
-            return { hit: true, type: 'Sky Shanghai', msg: "You got a Sky Shanghai! Game Over!" };
+          return { hit: true, type: 'Sky Shanghai', msg: "You got a Sky Shanghai! Game Over!" };
         }
         if (double && triple && quad) {
-            return { hit: true, type: 'Royal Shanghai', msg: "You got a Royal Shanghai! Game Over!" };
+          return { hit: true, type: 'Royal Shanghai', msg: "You got a Royal Shanghai! Game Over!" };
         }
-    } else {
+      } else {
         if (single && double && triple) {
-            return { hit: true, type: 'Shanghai', msg: "You got Shanghai! Game Over" };
+          return { hit: true, type: 'Shanghai', msg: "You got Shanghai! Game Over" };
         }
+      }
+      return { hit: false, type: null, msg: "" };
     }
-    return { hit: false, type: null, msg: "" };
-}
 
-/**
- * Checks if a player hit every number (scored > 0 in all rounds played)
- */
-function hasHitEveryNumber(player) {
-    for (let i = 0; i < maxRounds; i++) {
+    /**
+     * Checks if a player hit every number (scored > 0 in all rounds played)
+     */
+    function hasHitEveryNumber(player) {
+      for (let i = 0; i < maxRounds; i++) {
         if (!player.scores[i] || player.scores[i] === 0) {
-            return false;
+          return false;
         }
+      }
+      return true;
     }
-    return true;
-}
 
-function recordScore(multiplier) {
-    pushHistory();
-    let points = multiplier * currentRound;
-    players[currentPlayerIdx].scores[currentRound - 1] += points;
-    players[currentPlayerIdx].total += points;
+    function recordScore(multiplier) {
+      pushHistory();
+      let points = multiplier * currentRound;
+      players[currentPlayerIdx].scores[currentRound - 1] += points;
+      players[currentPlayerIdx].total += points;
 
-    if (multiplier === 1) currentTurnHits.single = true;
-    if (multiplier === 2) currentTurnHits.double = true;
-    if (multiplier === 3) currentTurnHits.triple = true;
-    if (multiplier === 4) currentTurnHits.quad = true;
+      if (multiplier === 1) currentTurnHits.single = true;
+      if (multiplier === 2) currentTurnHits.double = true;
+      if (multiplier === 3) currentTurnHits.triple = true;
+      if (multiplier === 4) currentTurnHits.quad = true;
 
-    const shanghaiResult = checkShanghai();
-    if (shanghaiResult.hit) {
+      const shanghaiResult = checkShanghai();
+      if (shanghaiResult.hit) {
         endGame(true, shanghaiResult.msg, shanghaiResult.type);
         return;
-    }
+      }
 
-    if (currentDart < 3) {
+      if (currentDart < 3) {
         currentDart++;
-    } else {
+      } else {
         nextTurn();
+      }
+      renderScoreboard();
+      updateDisplay();
     }
 
-    renderScoreboard();
-    updateDisplay();
-}
-
-function undoLastThrow() {
-    if (stateHistory.length === 0) {
+    function undoLastThrow() {
+      if (stateHistory.length === 0) {
         alert("No actions to undo!");
         return;
+      }
+      handleShanghaiDisplay(null);
+      const previousState = stateHistory.pop();
+      players = previousState.players;
+      currentRound = previousState.currentRound;
+      currentPlayerIdx = previousState.currentPlayerIdx;
+      currentDart = previousState.currentDart;
+      currentTurnHits = previousState.currentTurnHits;
+      isGameOver = previousState.isGameOver;
+      winningShanghaiInfo = previousState.winningShanghaiInfo;
+
+      document.getElementById('btn-group').style.display = 'grid';
+      document.getElementById('winner-box').style.display = 'none';
+      const statusEl = document.getElementById('leagueSyncStatus');
+      if (statusEl) statusEl.textContent = '';
+
+      renderScoreboard();
+      updateDisplay();
     }
-    handleShanghaiDisplay(null);
-    const previousState = stateHistory.pop();
-    players = previousState.players;
-    currentRound = previousState.currentRound;
-    currentPlayerIdx = previousState.currentPlayerIdx;
-    currentDart = previousState.currentDart;
-    currentTurnHits = previousState.currentTurnHits;
-    isGameOver = previousState.isGameOver;
 
-    document.getElementById('btn-group').style.display = 'grid';
-    document.getElementById('winner-box').style.display = 'none';
-
-    renderScoreboard();
-    updateDisplay();
-}
-
-function nextTurn() {
-    currentDart = 1;
-    currentTurnHits = { single: false, double: false, triple: false, quad: false };
-
-    if (currentPlayerIdx < players.length - 1) {
+    function nextTurn() {
+      currentDart = 1;
+      currentTurnHits = { single: false, double: false, triple: false, quad: false };
+      if (currentPlayerIdx < players.length - 1) {
         currentPlayerIdx++;
         showNextPlayerAlert();
-    } else {
+      } else {
         if (currentRound < maxRounds) {
-            currentRound++;
-            currentPlayerIdx = 0;
-            showNextPlayerAlert();
+          currentRound++;
+          currentPlayerIdx = 0;
+          showNextPlayerAlert();
         } else {
-            endGame(false, "");
+          endGame(false, "");
         }
+      }
     }
-}
 
-function showNextPlayerAlert() {
-    const overlay = document.getElementById('alert-overlay');
-    overlay.innerHTML = `<div><small style="display:block; font-size:1rem; opacity:0.8;">UP NEXT</small>${players[currentPlayerIdx].name}</div>`;
-    overlay.style.display = 'flex';
-    setTimeout(() => {
+    function showNextPlayerAlert() {
+      const overlay = document.getElementById('alert-overlay');
+      overlay.innerHTML = `<div><small style="display:block; font-size:1rem; opacity:0.8;">UP NEXT</small>${players[currentPlayerIdx].name}</div>`;
+      overlay.style.display = 'flex';
+      setTimeout(() => {
         overlay.style.display = 'none';
-    }, 1500);
-}
+      }, 1500);
+    }
 
-function updateDisplay() {
-    document.getElementById('round-title').textContent = `Round ${currentRound}`;
-    document.getElementById('turn-indicator').textContent = `${players[currentPlayerIdx].name}'s Turn`;
-    document.getElementById('dart-count').textContent = currentDart;
-}
+    function updateDisplay() {
+      document.getElementById('round-title').textContent = `Round ${currentRound}`;
+      document.getElementById('turn-indicator').textContent = `${players[currentPlayerIdx].name}'s Turn`;
+      document.getElementById('dart-count').textContent = currentDart;
+    }
 
-function renderScoreboard() {
-    const container = document.getElementById('scoreboard');
-    container.innerHTML = '';
-    
-    players.forEach((p, idx) => {
+    function renderScoreboard() {
+      const container = document.getElementById('scoreboard');
+      container.innerHTML = '';
+      players.forEach((p, idx) => {
         const col = document.createElement('div');
         col.className = 'player-col';
-        
         const hasFullCastle = isGameOver && hasHitEveryNumber(p);
         const fullCastleImgTag = hasFullCastle ? `<img src="FullCastle.png" alt="Full Castle" class="full-castle-badge">` : '';
-
-        let rows = `<div class="player-header" style="${idx === currentPlayerIdx && !isGameOver ? 'background:#e7f3ff;' : ''}">
-            <span>${p.name}</span>
-            ${fullCastleImgTag}
-        </div>`;
-        
+        let rows = `<div class="player-header" style="${idx === currentPlayerIdx && !isGameOver ? 'background:#e7f3ff;' : ''}"> <span>${p.name}</span> ${fullCastleImgTag} </div>`;
         for (let i = 0; i < maxRounds; i++) {
-            const isCurrentRound = (i === currentRound - 1) && !isGameOver;
-            rows += `<div class="score-cell" style="${isCurrentRound ? 'font-weight:bold; color:var(--primary); background:#fcfcfc;' : ''}">${p.scores[i] || '-'}</div>`;
+          const isCurrentRound = (i === currentRound - 1) && !isGameOver;
+          rows += `<div class="score-cell" style="${isCurrentRound ? 'font-weight:bold; color:var(--primary); background:#fcfcfc;' : ''}">${p.scores[i] || '-'}</div>`;
         }
-        
         rows += `<div class="total-row">${p.total}</div>`;
         col.innerHTML = rows;
         container.appendChild(col);
-    });
-}
+      });
+    }
 
-function endGame(isShanghai, shanghaiMsg, shanghaiType = null) {
-    isGameOver = true;
-    const winner = isShanghai ? players[currentPlayerIdx] : players.reduce((prev, current) => (prev.total > current.total) ? prev : current);
-    
-    const box = document.getElementById('winner-box');
-    const winText = document.getElementById('winner-text');
-    box.style.display = 'block';
+    function endGame(isShanghai, shanghaiMsg, shanghaiType = null) {
+      isGameOver = true;
+      const winner = isShanghai
+        ? players[currentPlayerIdx]
+        : players.reduce((prev, current) => (prev.total > current.total) ? prev : current);
 
-    if (isShanghai) {
+      winningShanghaiInfo = isShanghai && shanghaiType
+        ? { playerIndex: currentPlayerIdx, type: shanghaiType }
+        : null;
+
+      const box = document.getElementById('winner-box');
+      const winText = document.getElementById('winner-text');
+      box.style.display = 'block';
+
+      if (isShanghai) {
         box.style.background = "linear-gradient(45deg, #ff0000, #ffc107)";
         winText.innerHTML = `🔥 ${shanghaiMsg.toUpperCase()} 🔥<br><span style="font-size:1.2rem">${winner.name} wins instantly!</span>`;
         handleShanghaiDisplay(shanghaiType);
-    } else {
+      } else {
         box.style.background = "var(--warning)";
         winText.textContent = `🏆 WINNER: ${winner.name} (${winner.total})`;
         handleShanghaiDisplay(null);
+      }
+
+      document.getElementById('btn-group').style.display = 'none';
+      document.getElementById('turn-indicator').textContent = "Game Complete";
+      saveGame(winner, isShanghai, shanghaiMsg);
+      loadSavedLeagues();
+      renderScoreboard();
     }
 
-    document.getElementById('btn-group').style.display = 'none';
-    document.getElementById('turn-indicator').textContent = "Game Complete";
-
-    saveGame(winner, isShanghai, shanghaiMsg);
-    renderScoreboard();
-}
-
-function saveGame(winner, isShanghai, shanghaiMsg) {
-    const history = JSON.parse(localStorage.getItem('shanghai_history') || '[]');
-    const gameRecord = {
+    function saveGame(winner, isShanghai, shanghaiMsg) {
+      const history = JSON.parse(localStorage.getItem('shanghai_history') || '[]');
+      const gameRecord = {
         date: gameDate || new Date().toISOString().split('T')[0],
         mode: `${selectedMode} (${selectedBoard})`,
         winner: winner.name,
@@ -607,38 +763,47 @@ function saveGame(winner, isShanghai, shanghaiMsg) {
         isShanghai: isShanghai,
         shanghaiMsg: shanghaiMsg,
         players: players.map(p => ({ name: p.name, total: p.total }))
-    };
-    history.unshift(gameRecord);
-    localStorage.setItem('shanghai_history', JSON.stringify(history));
-}
+      };
+      history.unshift(gameRecord);
+      localStorage.setItem('shanghai_history', JSON.stringify(history));
+    }
 
-function renderHistory() {
-    const list = document.getElementById('history-list');
-    const history = JSON.parse(localStorage.getItem('shanghai_history') || '[]');
-    if (history.length === 0) {
+    function renderHistory() {
+      const list = document.getElementById('history-list');
+      const history = JSON.parse(localStorage.getItem('shanghai_history') || '[]');
+      if (history.length === 0) {
         list.innerHTML = '<p style="text-align:center; color:#888;">No games played yet.</p>';
         return;
-    }
-    list.innerHTML = history.map(game => `
+      }
+      list.innerHTML = history.map(game => `
         <div class="history-item">
-            <div>
-                <div class="history-date">${game.date}</div>
-                <div class="history-meta">${game.mode} ${game.isShanghai ? `(${game.shanghaiMsg})` : ''}</div>
-            </div>
-            <div style="text-align:right">
-                <div style="font-weight:bold; color:var(--success)">${game.winner}</div>
-                <div style="font-size:0.8rem">${game.score} pts</div>
-            </div>
+          <div>
+            <div class="history-date">${game.date}</div>
+            <div class="history-meta">${game.mode} • Winner: <strong>${game.winner}</strong> (${game.score} pts)</div>
+          </div>
+          <div style="font-size: 1.2rem;">${game.isShanghai ? '🔥' : '🏆'}</div>
         </div>
-    `).join('');
-}
+      `).join('');
+    }
 
-function clearHistory() {
-    if (confirm("Are you sure you want to delete all game history?")) {
+    function clearHistory() {
+      if (confirm("Clear all saved Shanghai history?")) {
         localStorage.removeItem('shanghai_history');
         renderHistory();
+      }
     }
-}
-</script>
+
+    // Expose functions to global scope for inline onclick handlers
+    window.showTab = showTab;
+    window.addPlayer = addPlayer;
+    window.startGame = startGame;
+    window.recordScore = recordScore;
+    window.undoLastThrow = undoLastThrow;
+    window.clearHistory = clearHistory;
+    window.sendToLeagueForm = sendToLeagueForm;
+
+    // Initial load of saved leagues
+    loadSavedLeagues();
+  </script>
 </body>
 </html>
